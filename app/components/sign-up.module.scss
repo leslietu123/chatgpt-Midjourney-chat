@@ -1,0 +1,118 @@
+// RegisterForm.scss
+.register-container {
+  height: 100%;
+  padding: 20px;
+  overflow: auto;
+}
+
+.sign-in-up {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+
+  .sign-in-up-link {
+    color: var(--black);
+  }
+}
+
+.register-form {
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+  //padding: 20px;
+  //border: 1px solid #ccc;
+  border-radius: 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .register-content {
+    width: 100%;
+    margin: auto;
+  }
+
+  .get-verificationcode {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .get-code {
+    position: absolute;
+    right: 10px;
+    margin-bottom: 20px;
+    border: 0px;
+    background-color: rgba(255, 255, 255, 0);
+    color: var(--btn-color);
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+    position: relative;
+
+    .password-visible {
+      position: absolute;
+      right: 10px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type='text'],
+    input[type='password'] {
+      width: 100%;
+      padding: 10px;
+      border-top: 0px;
+      border-left: 0px;
+      border-right: 0px;
+      border-bottom: 3px solid var(--bg-transparent);
+      border-radius: 0px;
+      //border-radius: 4px;
+      //border: 1px solid #ccc;
+      text-align: left;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    input:focus {
+      outline: none;
+    }
+
+
+  }
+
+  .submit-btn {
+    width: 100%;
+    background-color: var(--btn-color);
+    border: 0px;
+    padding: 15px 0px;
+    font-size: 18px;
+    color: #ffffff;
+    border-radius: 5px;
+
+    &:hover {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .submit-btn-disable {
+    background-color: var(--btn-color-disabled);
+
+    &:hover {
+      box-shadow: none !important;
+    }
+  }
+}

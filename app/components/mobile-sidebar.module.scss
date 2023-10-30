@@ -1,0 +1,42 @@
+.mobile-sidebar{
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  z-index: 999;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  animation-name: bottomIn;
+    animation-duration: 1s;
+
+}
+
+@keyframes bottomIn {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-sidebar-content{
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  padding: 15px 0;
+
+  width: 89%;
+  border-radius: 50px;
+  box-shadow: var(--moz-box-shadow) !important;
+  background-color: var(--bottom-bar-bg);
+  backdrop-filter: blur(20px);
+
+}
+
+.mobile-sidebar-content-item{
+  display: flex;
+  align-items: center;
+    justify-content: center;
+}
