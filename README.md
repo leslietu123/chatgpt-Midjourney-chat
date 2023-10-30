@@ -34,7 +34,7 @@ npm run start // #或者开发模式启动： npm run dev
 - 在原项目中主要新增了midjourney绘图，以及积分系统，会员系统，用户系统，订单支付系统，实现了用户管理
 - 后端技术栈wordpress,php,mysql,redis,mongodb,restapi,前端技术栈react,axios,express,antd
 - 本项目仅供学习交流使用，无意用于商业用途
-- 对后端源码感兴趣的可以联系vx：15989757980，有偿提供源码，联系请备注：gpt后端
+- 对后端源码感兴趣的可以联系vx：15989757980或者邮箱：1124880510@qq.com，有偿提供源码，联系请备注：gpt后端
 - 前后端源码无加密，支持任意二开。
 - 100%响应式设计，支持深色浅色模式切换
 - 前端支持私有服务器部署，也支持vercel,aws amplify,railway等平台部署
@@ -45,7 +45,7 @@ npm run start // #或者开发模式启动： npm run dev
 - 更多模型接入
 
 ### 项目演示
-- 演示地址：http://test.bsad.top
+- 演示地址：https://ai.bsad.top
 
 ### 项目前台截图
 ![主界面](./docs/images/3081698650193_.pic_hd.jpg)
