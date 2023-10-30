@@ -26,8 +26,8 @@ const ImgViewer = (props: imgProps) => {
                     initialPositionX={0}
                     initialPositionY={0}
                     limitToBounds={false}
-                    minScale={1}
-                    maxScale={1.5}
+                    minScale={0.5}
+                    maxScale={3}
                     // pan={{disabled: false}}
                     pinch={{disabled: false}}
                     doubleClick={{disabled: false}}
@@ -41,7 +41,7 @@ const ImgViewer = (props: imgProps) => {
                             <input
                                 type="range"
                                 value={zoom}
-                                min={1}
+                                min={0.5}
                                 max={3}
                                 step={0.1}
                                 aria-labelledby="Zoom"

@@ -123,8 +123,6 @@ export default function Cover(props: CoverProps) {
             )}
 
             <div className={styles["cover-container"]}>
-
-
                 <div className={styles["cover-content"]}>
                     <div className={styles["cover-content-img"]}>
                         <div className={styles["cover-content-img-content"]}>
