@@ -45,7 +45,7 @@ npm run start // #或者开发模式启动： npm run dev
 - 更多模型接入
 
 ### 项目演示
-- 演示地址：https://ai.bsad.top(注册赠送100积分测试)
+- 演示地址：https://ai.bsad.top (注册赠送100积分测试)
 
 ### 项目前台截图
 ![主界面](./docs/images/3081698650193_.pic_hd.jpg)
