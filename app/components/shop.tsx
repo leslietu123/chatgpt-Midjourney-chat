@@ -4,6 +4,7 @@ import {IconButton} from "@/app/components/button";
 import CloseIcon from "@/app/icons/close.svg";
 import styles from './shop.module.scss';
 import {Path} from "@/app/constant";
+import mixpanel from "mixpanel-browser";
 import {useNavigate} from "react-router-dom";
 import {ErrorBoundary} from "@/app/components/error";
 import Loading from "./loader";
@@ -14,6 +15,8 @@ import PopUp from "./pop";
 import { payment, point, } from "../api/backapi/types";
 import {useAppConfig} from "@/app/store";
 import {useage} from "../api/backapi/static";
+
+mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, { debug: true });
 
 const Payment: payment[] = [
     {
@@ -118,6 +121,14 @@ export function Shop() {
                     setOrderID(res.id);
                     const payRes = await getPaymentQrcode(res.id, selectedPayment, selectedPoint);
 
+                    mixpanel.track("创建订单", {
+                        "订单ID": res.id,
+                        "套餐名": selectedPoint.post_title,
+                        "用户名": user.username,
+                        "金额": selectedPoint.meta_data.sale_price,
+                        "支付方式": selectedPayment.payment_method_title,
+                    })
+
                     if (payRes && payRes.errcode === 0) {
                         payRes.order_id = res.id;
                         payRes.order_date = new Date();
@@ -149,6 +160,12 @@ export function Shop() {
             const res = await checkOrder(order_id);
             if (res && res.status && res.status === "completed") {
                 showToast("支付成功");
+                mixpanel.track("支付状态", {
+                    "订单ID": res.id,
+                    "支付状态": res.status,
+                    "金额": res.total,
+                    "用户名":res.billing.email,
+                })
                 navigate(Path.Home);
             } else {
                 showToast("支付失败");

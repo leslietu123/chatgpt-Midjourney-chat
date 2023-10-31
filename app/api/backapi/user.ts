@@ -69,6 +69,15 @@ export function isLogin() {
     }
 }
 
+
+export async function getLocalUserInfo() {
+    const user_info = localStorage.getItem('user_info');
+    if (user_info && user_info !== "") {
+        return JSON.parse(user_info);
+    } else {
+        return {};
+    }
+}
 // 短信发送...
 
 export async function sendVerificationCode(phoneNumber: string) {
@@ -194,7 +203,6 @@ export async function fetchUserInfo (){
         const res = await getUserInfo();
         if (res && res.data.email !== "" && res.data.email !== undefined) {
             const pointsRes = await getPoints(res.data.email,res.data.id);
-            console.log(pointsRes);
             res.data.refer_code = pointsRes.data[0].refer_code || "";
             res.data.points = pointsRes.data[0].points || "";
             res.data.used_total_points = pointsRes.data[0].used_total_points || "";

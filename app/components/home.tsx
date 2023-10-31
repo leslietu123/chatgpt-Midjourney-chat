@@ -1,26 +1,18 @@
 "use client";
 
 import {LeftSidebar} from "@/app/components/left-sidebar";
-
 require("../polyfill");
-
 import React, {useState, useEffect} from "react";
-
 import styles from "./home.module.scss";
-
 import BotIcon from "../icons/bot.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-
+import mixpanel from "mixpanel-browser";
 import {getCSSVar, useMobileScreen} from "../utils";
-
 import dynamic from "next/dynamic";
 import {Path, SlotID} from "../constant";
 import {ErrorBoundary} from "./error";
-
 import {getISOLang, getLang} from "../locales";
-
 import {HashRouter as Router, useLocation, Routes, Route} from "react-router-dom";
-import {SideBar} from "./sidebar";
 import {useAppConfig} from "../store/config";
 import {AuthPage} from "./auth";
 import {getClientConfig} from "../config/client";
@@ -29,9 +21,11 @@ import {useAccessStore} from "../store";
 import {MobileSidebar} from "@/app/components/mobile-sidebar";
 import ChatIcon from "@/app/icons/chat.svg";
 import {IconButton} from "@/app/components/button";
-import ShareInfo from "@/app/components/shareinfo";
 import PopUp from "@/app/components/pop";
+import {getLocalUserInfo, isLogin} from "@/app/api/backapi/user";
 
+
+mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, { debug: true });
 export function Loading(props: { noLogo?: boolean }) {
     return (
         <div className={styles["loading-content"] + " no-dark"}>
@@ -148,6 +142,7 @@ const loadAsyncGoogleFont = () => {
 
 function Screen() {
     const [showKefu, setShowKefu] = useState(false);
+    const isSignIn = isLogin();
     const config = useAppConfig();
     const location = useLocation();
     const isChat = location.pathname === Path.Chat;
@@ -163,6 +158,17 @@ function Screen() {
     useEffect(() => {
         loadAsyncGoogleFont();
     }, []);
+
+    useEffect(() => {
+        getLocalUserInfo().then(r => {
+            mixpanel.track(`浏览${location.pathname}`, {
+                "页面路径": location.pathname,
+                "是否登录":isSignIn,
+                "是否移动端":isMobileScreen,
+                "用户名":r.username ? r.username : "未登录",
+            });
+        });
+    }, [location.pathname]);
 
     return (
         <div
@@ -245,7 +251,6 @@ export function Home() {
     useHtmlLang();
 
     useEffect(() => {
-        console.log("[Config] got config from build time", getClientConfig());
         useAccessStore.getState().fetch();
     }, []);
 

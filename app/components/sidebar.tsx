@@ -102,12 +102,10 @@ export function SideBar(props: { className?: string }) {
     const chatStore = useChatStore();
     const isMobileScreen = useMobileScreen();
 
-    // drag side bar
     const {onDragMouseDown, shouldNarrow} = useDragSideBar();
     const navigate = useNavigate();
     const config = useAppConfig();
     const [showSidebar, setShowSidebar] = useState<boolean>(true);
-    console.log(showSidebar);
 
     useHotKey();
 

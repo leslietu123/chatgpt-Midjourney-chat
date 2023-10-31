@@ -8,7 +8,6 @@ import {IconButton} from "@/app/components/button";
 import CloseIcon from "@/app/icons/close.svg";
 import {Path} from "@/app/constant";
 import {useNavigate} from "react-router-dom";
-import {showToast} from "@/app/components/ui-lib";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 export function Ground() {
@@ -19,6 +18,7 @@ export function Ground() {
     const [selectDraw, setSelectDraw] = useState<Draws | undefined>(undefined);
     const [hasMore, setHasMore] = useState(true)
     let limit = 20;
+
 
     useEffect(() => {
         const run = async () => {

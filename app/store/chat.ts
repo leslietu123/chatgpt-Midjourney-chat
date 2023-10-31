@@ -794,13 +794,6 @@ export const useChatStore = create<ChatStore>()(
 
                 const lastSummarizeIndex = session.messages.length;
 
-                console.log(
-                    "[Chat History] ",
-                    toBeSummarizedMsgs,
-                    historyMsgLength,
-                    modelConfig.compressMessageLengthThreshold,
-                );
-
                 if (
                     historyMsgLength > modelConfig.compressMessageLengthThreshold &&
                     modelConfig.sendMemory
