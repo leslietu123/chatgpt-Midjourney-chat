@@ -53,6 +53,7 @@ export default function Cover(props: CoverProps) {
     async function handleDownload() {
         const url = props.draw?.imageUrl || "";
         setDownloading(true);
+        showToast("下载中...")
         const response = await fetch(url);
         const blob = await response.blob();
         fileDownload(blob, 'image.png'); // or any other name you want
@@ -100,7 +101,7 @@ export default function Cover(props: CoverProps) {
                         bordered
                     />
                     <IconButton
-                        icon={<DownLoadIcon/>}
+                        icon={downloading ? <>...</> : <DownLoadIcon/>}
                         onClick={handleDownload}
                         bordered
                     />

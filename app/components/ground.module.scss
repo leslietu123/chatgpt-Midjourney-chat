@@ -46,7 +46,7 @@
   margin-bottom: 10px;
   border-radius: 20px;
   position: relative;
-  box-shadow: var(--moz-box-shadow);
+  //box-shadow: var(--moz-box-shadow);
 
 }
 
@@ -100,5 +100,6 @@
 @media screen and (max-width: 768px) {
   .ground__draws {
     columns: 2;
+    padding: 10px 0;
   }
 }
