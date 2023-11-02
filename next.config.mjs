@@ -29,7 +29,7 @@ const nextConfig = {
   output: mode,
   images: {
     unoptimized: mode === "export",
-    domains: ['midcdn.aispace.site','midcdn.funny-code.top'],
+    domains: ['midcdn.aispace.site','midcdn.funny-code.top','cdn.bsad.top'],
 
   },
   experimental: {
