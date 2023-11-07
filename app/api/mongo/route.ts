@@ -5,7 +5,7 @@ import {NextRequest, NextResponse} from "next/server";
 const username = encodeURIComponent(process.env.NEXT_PUBLIC_MONGODB_USERNAME || '');
 const password = encodeURIComponent(process.env.NEXT_PUBLIC_MONGODB_PASSWORD || '');
 const host = process.env.NEXT_PUBLIC_MONGODB_API || 'localhost:27017';
-const url = `mongodb://${username}:${password}@${host}/?authMechanism=DEFAULT&authSource=drawlist`;
+const url = `mongodb://${username}:${password}@${host}/?authMechanism=DEFAULT&authSource=${process.env.NEXT_PUBLIC_MONGODB_DB}`;
 const dbName = `${process.env.NEXT_PUBLIC_MONGODB_DB}`;
 const dbCollection = 'draw';
 console.log(url);
