@@ -1,9 +1,10 @@
 .upload-container{
-  width: 90%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .upload-btn{
-  margin-top: 30px;
+  //margin-top: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,7 +39,7 @@
 
 .upload-images-list{
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin: 20px 0px;
   position: relative;

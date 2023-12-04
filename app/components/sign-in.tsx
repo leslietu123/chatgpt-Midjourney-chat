@@ -5,11 +5,12 @@ import {Path} from "@/app/constant";
 import {useLocation, useNavigate} from "react-router-dom";
 import {ErrorBoundary} from "@/app/components/error";
 import styles from './sign-up.module.scss';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {getToken, isLogin} from "../api/backapi/user";
 import {useAppConfig} from "@/app/store";
 import {showToast} from "./ui-lib";
 import {Link} from "react-router-dom";
+import {userLogin} from "@/app/api/back/user";
 
 
 export function SignIn() {
@@ -49,9 +50,10 @@ export function SignIn() {
             return;
         }
         try {
-            const loginRes = await getToken(phoneNumber, password);
-            if (loginRes.data.token && loginRes.data.token !== "") {
-                localStorage.setItem("user_token", JSON.stringify(loginRes.data.token));
+            const loginRes =await userLogin(phoneNumber, password);
+            console.log(loginRes);
+            if (loginRes.jwtToken && loginRes.jwtToken !== "") {
+                localStorage.setItem("user_token", loginRes.jwtToken);
                 showToast("登录成功")
                 setLoading(false);
                 navigate(Path.UserProfile);

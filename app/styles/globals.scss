@@ -6,6 +6,7 @@
 
   /* color */
   --white: white;
+  --card-bg: #f5f5f5;
   --bg: rgb(255, 255, 255);
   --black: rgb(48, 48, 48);
   --gray: rgb(250, 250, 250);
@@ -14,6 +15,8 @@
   --btn-background: linear-gradient(90deg, #2507CC 0%, #8E26D4 100%), #7851EC;
   --ground-bg: linear-gradient(90deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
   --second: #f5f7fb;
+  --prompt-content: #efefef;
+  --prompt-border:1px solid rgb(206, 206, 206);
   --hover-color: #f3f3f3;
   --bar-color: rgba(0, 0, 0, 0.1);
   --pic-border:2px dashed rgb(140, 140, 140);
@@ -35,7 +38,7 @@
 
 @mixin dark {
   --theme: dark;
-
+  --card-bg: #101010;
   /* color */
   --white: rgb(0, 0, 0);
   --bg: rgb(0, 0, 0);
@@ -44,11 +47,13 @@
   --primary: #7269ef;
   --ground-bg: linear-gradient(0deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
   --second: #303841;
+  --prompt-content: #1c1c1c;
   --btn-background: linear-gradient(90deg, #2507CC 0%, #8E26D4 100%), #7851EC;
   --hover-color: #323232;
   --bg-transparent: rgba(114, 105, 239, 0.08);
   --bar-color: rgba(255, 255, 255, 0.1);
   --pic-border:2px dashed rgb(140, 140, 140);
+  --prompt-border:1px solid rgb(72, 72, 72);
   --draw-img-border:1px dashed rgb(255, 255, 255);
   --bottom-bar-bg: rgba(31, 31, 31, 0.49);
   --left-sidebar-background:#323232 ;
@@ -74,6 +79,10 @@
 
 .mask {
   filter: invert(0.8);
+}
+
+.ant-slider-rail{
+    background-color: rgb(115, 115, 115) !important;
 }
 
 
@@ -155,6 +164,19 @@ body {
   }
 }
 
+.css-17pwl6t{
+  z-index: 9999 !important;
+}
+
+.css-qg5db2{
+  background-image: linear-gradient(45deg, rgb(249, 249, 249) 25%, #000 25%, black 50%, rgb(255, 255, 255) 50%, rgb(255, 255, 255) 75%, #060606 75%, black) !important;
+  //background-color: rgba(0, 0, 0, 0) !important;
+  height: 50% !important;
+}
+.css-1rve4g2 ,.css-155wpyn{
+  background: rgba(237, 242, 247, 0) !important;
+}
+
 .ant-progress-inner{
   background-color: var(--black) !important;
 }
@@ -178,7 +200,7 @@ body {
 
 select {
   border: var(--border-in-light);
-  padding: 10px;
+  //padding: 10px;
   border-radius: 10px;
   appearance: none;
   cursor: pointer;
@@ -421,3 +443,4 @@ pre {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+

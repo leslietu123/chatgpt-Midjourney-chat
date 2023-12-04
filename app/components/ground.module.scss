@@ -91,11 +91,14 @@
 
 .ground__draw-img {
   //width: 100%;
-  border-radius: 20px;
+  border-radius: 3px;
   object-fit: contain;
   position: relative !important;
 }
 
+.mItem{
+  display: flex;
+}
 
 @media screen and (max-width: 768px) {
   .ground__draws {
@@ -103,3 +106,10 @@
     padding: 10px 0;
   }
 }
+
+
+
+
+
+
+

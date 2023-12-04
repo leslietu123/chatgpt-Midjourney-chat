@@ -3,11 +3,11 @@ import React, {useState, useRef} from "react";
 import styles from "./draw-imageuploader.module.scss";
 
 interface ImageUploaderProps {
-    onUpload: (uploadedImages: string[]) => void;
+    onUpload: (uploadedImages: File[]) => void;
 }
 
 export function ImageUploader(props: ImageUploaderProps) {
-    const [images, setImages] = useState<string[]>([]);
+    const [images, setImages] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleButtonClick = () => {
@@ -16,31 +16,9 @@ export function ImageUploader(props: ImageUploaderProps) {
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files!).slice(0, 5);
-
-        Promise.all(
-            files.map(
-                (file) =>
-                    new Promise<string>((resolve, reject) => {
-                        const reader = new FileReader();
-
-                        reader.onloadend = () => {
-                            resolve(reader.result as string);
-                        };
-
-                        reader.onerror = reject;
-
-                        reader.readAsDataURL(file);
-                    }),
-            ),
-        )
-            .then((results) => {
-                const uploadedImages = [...images, ...results];
-                setImages(uploadedImages);
-                props.onUpload(uploadedImages);
-            })
-            .catch((error) => {
-                console.log("Error uploading images:", error);
-            });
+        const uploadedImages = [...images, ...files];
+        setImages(uploadedImages);
+        props.onUpload(uploadedImages);
     };
 
     const handleImageRemove = (index: number) => {
@@ -66,24 +44,22 @@ export function ImageUploader(props: ImageUploaderProps) {
                 />
             </div>
 
-            <div className={styles["upload-images-list"]}>
-                {images.map((image, index) => (
-                    <div key={index} className={styles["upload-images-item-panel"]}>
-                        <img
-                            key={index}
-                            src={image}
-                            alt={`Image ${index + 1}`}
-                            className={styles["upload-images-item"]}
-                        />
-                        <span
-                            className={styles["upload-images-item-remove"]}
-                            onClick={() => handleImageRemove(index)} // 在点击事件处理函数中调用 handleImageRemove，并传入图片索引
-                        >
-              <DeleteOutlined/>
-            </span>
-                    </div>
-                ))}
-            </div>
+            {images.length > 0 && (
+                <div className={styles["upload-images-list"]}>
+                    {images.map((image, index) => (
+                        <div key={index} className={styles["upload-images-item-panel"]}>
+                            <img
+                                key={index}
+                                src={URL.createObjectURL(image)}
+                                alt={`Image ${index + 1}`}
+                                className={styles["upload-images-item"]}
+                            />
+                            <DeleteOutlined onClick={() => handleImageRemove(index)}/>
+                        </div>
+                    ))}
+                </div>
+            )}
+
         </div>
     );
 }

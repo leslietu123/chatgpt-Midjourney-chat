@@ -93,6 +93,8 @@ import {fetchUserInfo, isLogin} from "@/app/api/backapi/user";
 import {CheckoutParams, CheckoutRes, CheckPointsParams, User} from "@/app/api/backapi/types";
 import {Checkout, CheckPoints} from "@/app/api/backapi/checkout";
 import {theme} from "antd";
+import {checkInfo} from "@/app/api/back/shop";
+import {userAction} from "@/app/api/back/types";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
     loading: () => <LoadingIcon/>,
@@ -650,8 +652,6 @@ export function EditMessageModal(props: { onClose: () => void }) {
 function _Chat() {
     type RenderMessage = ChatMessage & { preview?: boolean };
     const islogin = isLogin();
-    const userToken = localStorage.getItem("user_token");
-    const [userInfo, setUserInfo] = useState({} as User);
     const chatStore = useChatStore();
     const session = chatStore.currentSession();
     const config = useAppConfig();
@@ -671,14 +671,6 @@ function _Chat() {
     const navigate = useNavigate();
     const theme = useAppConfig().theme;
 
-
-
-
-
-    useEffect(() => {
-            fetchUser();
-        }
-        , []);
 
     // prompt hints
     const promptStore = usePromptStore();
@@ -752,33 +744,16 @@ function _Chat() {
             navigate(Path.SignUp);
             return;
         }
-        ;
-        if (!userInfo || Object.keys(userInfo).length === 0) {
-            fetchUser();
-            return;
-        }
-
         try {
-            const checkpointsData: CheckPointsParams = {
-                user_email: userInfo.email,
-                user_id: userInfo.id.toString(),
-                action: `${!notGpt4 ? "3" : "1"}`,
-            };
-            const res = await CheckPoints(checkpointsData);
-
-            if (!res || !res.success) {
-                showToast(res && res.message ? res.message : "提交失败");
-                if (res && res.message === "积分余额不足") {
-                    navigate(Path.BuyPoints)
-                    return;
-                }
+            const res = await checkInfo(notGpt4 ? userAction.gpt3_5 : userAction.gpt4_0);
+            console.log(res)
+            if (!res.status) {
+                showToast(res && res.msg ? res.msg : "提交失败");
+                navigate(Path.BuyPoints)
                 return;
             }
-            ;
-            if (res && res.success) {
+            if (res && res.status) {
                 showToast("提交成功");
-                const transaction_id = res.transaction_id;
-
                 userInput = userInput.trim();
                 if (useImages.length > 0) {
                     if (mjImageMode === "IMAGINE" && userInput == "") {
@@ -801,7 +776,7 @@ function _Chat() {
                         mjImageMode,
                         setAutoScroll,
                         botMsg: extAttr?.botMsg,
-                    },userInfo,transaction_id,notGpt4);
+                    },notGpt4);
                     if (res !== false) {
                         localStorage.setItem(LAST_INPUT_KEY, userInput);
                         setUserInput("");
@@ -810,17 +785,6 @@ function _Chat() {
                         setPromptHints([]);
                         if (!isMobileScreen) inputRef.current?.focus();
                         setAutoScroll(true);
-                        // const checkoutData: CheckoutParams = {
-                        //     user_email: userInfo.email,
-                        //     user_id: userInfo.id.toString(),
-                        //     transaction_id: transaction_id ? transaction_id : "",
-                        //     points: `${!notGpt4 ? process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE_GPT4 : process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE}`,
-                        //     action: `${!notGpt4 ? "3" : "1"}`,
-                        // }
-                        // const res: CheckoutRes = await Checkout(checkoutData);
-                        // if (res.data && res.data.response.data.success) {
-                        //     showToast("扣除积分成功")
-                        // }
                     }
                 } catch (e) {
                     console.error(e);
@@ -925,12 +889,6 @@ function _Chat() {
     };
 
     const onResend = (message: ChatMessage) => {
-        // when it is resending a message
-        // 1. for a user's message, find the next bot response
-        // 2. for a bot's message, find the last user's input
-        // 3. delete original user input and bot's message
-        // 4. resend the user's input
-
         const resendingIndex = session.messages.findIndex(
             (m) => m.id === message.id,
         );
@@ -1155,15 +1113,6 @@ function _Chat() {
     const [isEditingMessage, setIsEditingMessage] = useState(false);
 
 
-    const fetchUser = () => {
-        if (userToken && userToken !== null && userToken !== "") {
-            fetchUserInfo().then(r => {
-                setUserInfo(r)
-            });
-        } else {
-            return;
-        }
-    }
     return (
         <div className={styles["chat-container"]}>
             <SideBar/>
@@ -1191,7 +1140,7 @@ function _Chat() {
                             {!session.topic ? DEFAULT_TOPIC : session.topic}
                         </div>
                         <div className="window-header-sub-title">
-                            {`${notGpt4 ? currentModel +` # ${process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE}ai币/次`:currentModel +` # ${process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE_GPT4}ai币/次`}`}
+                            {`${notGpt4 ? currentModel + ` # ${process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE}ai币/次` : currentModel + ` # ${process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE_GPT4}ai币/次`}`}
                         </div>
                     </div>
                     <div className="window-actions">

@@ -10,12 +10,13 @@ import {getToken, registerUser, sendVerificationCode, verifyCode,isLogin} from "
 import {useAppConfig} from "@/app/store";
 import {showToast} from "./ui-lib";
 import {Link} from "react-router-dom";
+import {authSms, isUser, sendSms, signUp, userLogin} from "@/app/api/back/user";
 
 
 export function SignUp() {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const shareCode = searchParams.get("wlr_ref");
+    const shareCode = searchParams.get("ref");
     const navigate = useNavigate();
     const theme = useAppConfig().theme;
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -74,7 +75,7 @@ export function SignUp() {
             setLoading(false)
             return;
         }
-        if (verificationCode.length != 4) {
+        if (verificationCode.length != 6) {
             showToast("请输入正确的验证码")
             setLoading(false)
             return;
@@ -85,23 +86,29 @@ export function SignUp() {
             return;
         }
         try {
-            const verifyRes = await verifyCode(phoneNumber, verificationCode);
-            if (verifyRes.data === true) {
-                const res = await registerUser(phoneNumber, password, inviteCode);
-                if (res.status === 200 && res.data.id) {
-                    const tokenRes = await getToken(phoneNumber, password);
-                    if (tokenRes.data.token !== ""){
-                        localStorage.setItem("user_token", JSON.stringify(tokenRes.data.token));
-                        showToast("注册成功")
+            const verifyRes = await authSms(phoneNumber, verificationCode);
+            if (verifyRes.status) {
+                const data = {
+                    name: phoneNumber,
+                    phone: phoneNumber,
+                    password: password,
+                    ref_code: inviteCode
+                }
+                const res = await signUp(data);
+                if (isUser(res)) {
+                    showToast('注册成功')
+                    const tokenRes = await userLogin(phoneNumber, password);
+                    if (tokenRes.jwtToken !== ""){
+                        localStorage.setItem("user_token", tokenRes.jwtToken);
                         setLoading(false)
-                        navigate(Path.UserProfile);
+                        // navigate(Path.UserProfile);
                     }else {
                         showToast("注册失败")
                         setLoading(false)
                         return;
                     }
                 } else {
-                    showToast("注册失败")
+                    showToast(res.message)
                     setLoading(false)
                     return;
                 }
@@ -118,17 +125,9 @@ export function SignUp() {
     };
 
     const handleGetVerificationCode = async () => {
-        // 在这里处理获取验证码逻辑
         try {
-            const res = await sendVerificationCode(phoneNumber);
-
-            if (res.data.status === "短信发送成功") {
-                showToast("短信发送成功")
-                setCodesend(true);
-            } else {
-                showToast("短信发送失败")
-                return;
-            }
+            const res = await sendSms(phoneNumber);
+            showToast(res.message)
         } catch (error: any) {
             console.log(error);
         }
@@ -179,7 +178,7 @@ export function SignUp() {
                                         type="text"
                                         id="verificationCode"
                                         value={verificationCode}
-                                        maxLength={4}
+                                        maxLength={6}
                                         placeholder={"请输入验证码"}
                                         onChange={(e) => setVerificationCode(e.target.value)}
                                     />

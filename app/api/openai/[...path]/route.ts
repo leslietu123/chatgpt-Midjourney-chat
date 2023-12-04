@@ -5,6 +5,7 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { requestOpenai } from "../../common";
+import axios from "axios";
 
 const ALLOWD_PATH = new Set(Object.values(OpenaiPath));
 
@@ -19,6 +20,7 @@ function getModels(remoteModelRes: OpenAIListModelResponse) {
 
   return remoteModelRes;
 }
+
 
 async function handle(
   req: NextRequest,

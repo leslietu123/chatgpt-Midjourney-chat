@@ -15,8 +15,10 @@ import InfoIcon from "../icons/eye.svg";
 import {showConfirm, showToast} from "./ui-lib";
 import ShareInfo from "./shareinfo";
 import PopUp from "./pop";
-import {PointsListProps, tarns, User} from "../api/backapi/types";
+import {PointsListProps, tarns,} from "../api/backapi/types";
 import InfiniteScroll from "react-infinite-scroll-component";
+import {getMe, getMyLogs} from "@/app/api/back/user";
+import {Log, User} from "../api/back/types";
 
 
 async function fetchTransaction(email: string, index: number) {
@@ -24,45 +26,40 @@ async function fetchTransaction(email: string, index: number) {
 }
 
 function PointsList(props: PointsListProps) {
-    const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<tarns[]>([]);
-    const [list, setList] = useState<tarns[]>([]);
+    const [data, setData] = useState<Log[]>([] as Log[]);
+    const [list, setList] = useState<Log[]>([] as Log[]);
     const [pageIndex, setPageIndex] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [amount, setAmount] = useState(0);
     const [currentAmount, setCurrentAmount] = useState(0)
     useEffect(() => {
-        if (props.email && props.email !== "") {
-            fetchTransaction(props.email, 1).then(res => {
-                if (res) {
-                    setData(res.data.transactions);
-                    setList(res.data.transactions);
-                    setAmount(res.data.transaction_total)
-                    setCurrentAmount(res.data.current_trans_count)
-                    setInitLoading(false);
-                } else {
-                    return;
-                }
-            });
+        try {
+            getMyLogs(pageIndex).then(res => {
+                setData(res.data)
+                setList(res.data)
+                setPageIndex(pageIndex + 1)
+            })
+        }catch (e) {
+            console.log(e)
         }
-    }, [props.email]);
+    }, []);
 
     const onLoadMore = () => {
         setLoading(true);
         // Increment the page index
-        fetchTransaction(props.email, pageIndex + 1).then(res => { // Fetch the transactions for the new page
-            if (res && res.data.transactions.length !== 0) {
-                const newData = data.concat(res.data.transactions);
+        getMyLogs(pageIndex).then(res => { // Fetch the transactions for the new page
+            if (res && res.data.length !== 0) {
+                const newData = data.concat(res.data);
                 setData(newData);
                 setList(newData);
-                setAmount(res.data.transaction_total)
-                setCurrentAmount(res.data.current_trans_count)
+                setAmount(res.total)
                 setLoading(false);
                 setPageIndex(pageIndex + 1);
             } else {
                 setLoading(false);
                 showToast("没有更多数据了");
+                setLoading(false);
                 setHasMore(false)
                 return;
             }
@@ -83,7 +80,7 @@ function PointsList(props: PointsListProps) {
                 <List
                     id="profile-points-list"
                     className={styles["profile-points-list"]}
-                    loading={initLoading}
+                    loading={loading}
                     // itemLayout="horizontal"
                     dataSource={list}
                     renderItem={(item) => (
@@ -91,12 +88,13 @@ function PointsList(props: PointsListProps) {
                             <Skeleton avatar title={false} loading={loading} active>
                                 <List.Item.Meta
                                     // avatar={<Avatar src={item.picture.large} />}
-                                    title={new Date(parseFloat(item.created_at) * 1000).toLocaleString()}
-                                    description={item.action_process_type === "earn_point" ? "获得" + item.points + "AI币" : item.note}
+                                    // title={new Date(parseFloat(item.created_at) * 1000).toLocaleString()}
+                                    description={item.content}
+                                    title={new Date(item.created_at).toLocaleString()}
                                     style={{color: "#fff !important"}}
                                 />
                                 <div
-                                    className="list-item-points">{item.action_process_type === "earn_point" ? "+" + item.points : "-" + item.points}</div>
+                                    className="list-item-points">{item.content}</div>
                             </Skeleton>
                         </List.Item>
                     )}
@@ -113,15 +111,45 @@ function PointsList(props: PointsListProps) {
 export function UserProfile() {
     const navigate = useNavigate();
     const userToken = localStorage.getItem("user_token");
-    const [userInfo, setUserInfo] = React.useState({} as User);
+    const [userInfo, setUserInfo] = React.useState<User>({
+        _id: "",
+        name: "",
+        phone: "",
+        member: {
+            _id: "",
+            name: "",
+            length: 0,
+            unlimited: false,
+            point: {
+                _id: "",
+                name: "",
+                points: 0,
+                unlimited: false,
+                consumption: {
+                    mj: 0,
+                    gpt3_5: 0,
+                    gpt4_0: 0
+                }
+            },
+        },
+        memberInfo: {
+            start_at: "",
+            end_at: "",
+            points: 0,
+            status: ""
+        },
+        created_at: "",
+        updated_at: ""
+    } as unknown as User);
+
     const [loading, setLoading] = React.useState(false);
     const [showShareInfo, setShowShareInfo] = React.useState(false);
     const [showPointsTransaction, setShowPointsTransaction] = React.useState(false);
 
 
     useEffect(() => {
-            if (userToken && userToken !== null && userToken !== "") {
-                fetchUserInfo().then(r => {
+            if (userToken && userToken !== "") {
+                getMe().then(r => {
                     setUserInfo(r);
                     setLoading(false);
                 });
@@ -140,7 +168,7 @@ export function UserProfile() {
 
     const copyCodeClipboard = async () => {
         try {
-            await navigator.clipboard.writeText(userInfo.refer_code);
+            await navigator.clipboard.writeText(userInfo.ref_code);
             showToast("已复制到剪切板");
         } catch (err) {
             showToast("复制失败");
@@ -149,7 +177,7 @@ export function UserProfile() {
     };
     const copyLinkClipboard = async () => {
         try {
-            await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_FRONT_URL}/#/sign-up?wlr_ref=` + userInfo.refer_code);
+            await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_FRONT_URL}/#/sign-up?ref=` + userInfo.ref_code);
             showToast("已复制到剪切板");
         } catch (err) {
             showToast("复制失败");
@@ -163,7 +191,7 @@ export function UserProfile() {
                    buttonText="我知道了" content={<ShareInfo/>} onClose={() => setShowShareInfo(false)}/>
             <PopUp hideButton={true} title="积分明细" open={showPointsTransaction}
                    onClick={() => setShowPointsTransaction(false)}
-                   buttonText="我知道了" content={<PointsList email={userInfo.email}/>}
+                   buttonText="我知道了" content={<PointsList />}
                    onClose={() => setShowPointsTransaction(false)}
             />
             <div className="window-header">
@@ -199,7 +227,7 @@ export function UserProfile() {
                             <span
                                 className={styles["profile-header-name"]}>{userInfo.name ? "@" + userInfo.name : "..."}</span>
                             <span
-                                className={styles["profile-memberinfo"]}>{userInfo.id ? "#" + userInfo.id : "..."}</span>
+                                className={styles["profile-memberinfo"]}>{userInfo._id ? "#" + userInfo._id : "..."}</span>
                         </div>
                         <div className={styles["profile-info"]}>
                             <div className={styles["profile-points"]}>
@@ -218,12 +246,8 @@ export function UserProfile() {
 
                                 </div>
                                 <div className={styles["profile-points-item"]}>
-                                    <span>{userInfo.points ? "剩余AI币" : "..."}</span>
-                                    <p>{userInfo.points ? userInfo.points + "/" + userInfo.earn_total_point : "..."}</p>
-                                </div>
-                                <div className={styles["profile-points-item"]}>
-                                    <span>今日绘画额度</span>
-                                    <p>{userInfo.remaining_draws ? userInfo.remaining_draws + "次" : "..."}</p>
+                                    <span>{userInfo.memberInfo.points ? "剩余AI币" : "..."}</span>
+                                    <p>{userInfo.memberInfo.points ? userInfo.memberInfo.points : "..."}</p>
                                 </div>
                             </div>
                             <div className={styles["profile-points"]}>
@@ -235,21 +259,21 @@ export function UserProfile() {
                                                 shadow/>
                                 </div>
                                 <div className={styles["profile-points-item"]}>
-                                    <span>{userInfo.refer_code ? "我的邀请码" : "..."}</span>
+                                    <span>{userInfo.ref_code ? "我的邀请码" : "..."}</span>
                                     <div className={styles["profile-points-item-copy"]}>
                                         {!loading &&
                                             <ChatAction text="" icon={<CopyIcon/>} style={{marginTop: "3px"}}
                                                         onClick={copyCodeClipboard}/>}
-                                        <p>{userInfo.refer_code ? userInfo.refer_code : "..."}</p>
+                                        <p>{userInfo.ref_code ? userInfo.ref_code : "..."}</p>
                                     </div>
                                 </div>
                                 <div className={styles["profile-points-item"]}>
-                                    <span>{userInfo.refer_code ? "我的邀请链接" : "..."}</span>
+                                    <span>{userInfo.ref_code ? "我的邀请链接" : "..."}</span>
                                     <div className={styles["profile-points-item-copy"]}>
                                         {!loading &&
                                             <ChatAction text="" icon={<CopyIcon/>} style={{marginTop: "3px"}}
                                                         onClick={copyLinkClipboard}/>}
-                                        <p>{userInfo.refer_code ? `${process.env.NEXT_PUBLIC_FRONT_URL}/#/sign-up?wlr_ref=` + userInfo.refer_code : "..."}</p>
+                                        <p>{userInfo.ref_code ? `${process.env.NEXT_PUBLIC_FRONT_URL}/#/sign-up?wlr_ref=` + userInfo.ref_code : "..."}</p>
                                     </div>
                                 </div>
                             </div>

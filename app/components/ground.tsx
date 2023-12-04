@@ -1,5 +1,5 @@
 import styles from "./ground.module.scss";
-import React, {useEffect, useState} from "react";
+import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
 import {fetchdraws} from "../api/mongo/ground"
 import {Draws, FetchParams} from "@/app/api/backapi/types";
 import Cover from "./cover";
@@ -9,57 +9,83 @@ import CloseIcon from "@/app/icons/close.svg";
 import {Path} from "@/app/constant";
 import {useNavigate} from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
+import {getGround} from "@/app/api/back/mj";
+import {drawRes} from "@/app/api/back/types";
+import {Grid} from "@chakra-ui/react";
+import Masonry from 'react-layout-masonry';
+
 
 export function Ground() {
 
     const navigate = useNavigate()
-    const [draws, setDraws] = useState<Draws[]>([]);
+    const [draws, setDraws] = useState<drawRes[]>([]);
     const [open, setOpen] = useState<boolean>(false);
-    const [selectDraw, setSelectDraw] = useState<Draws | undefined>(undefined);
+    const [selectDraw, setSelectDraw] = useState<drawRes>({} as drawRes);
     const [hasMore, setHasMore] = useState(true)
-    let limit = 20;
+    // let limit = 20;
+    const [page, setPage] = useState(1);
+console.log(page)
 
 
     useEffect(() => {
         const run = async () => {
-            fetchdraws("", draws.length, limit).then((res) => {
-                if (res && res.data.length === limit) {
-                    setHasMore(true);
-                    setDraws(res.data);
-                    return;
-                }
-                if (res && res.data.length == 0){
-                    setHasMore(false)
-                    return;
-                }
-                if(res && res.data.length< limit){
-                    setHasMore(false)
-                    setDraws(res.data);
-                    return;
-                }
+            getGround(page).then((res) => {
+                setDraws(res);
+                setPage(page + 1);
+                // if (res && res.data.length === limit) {
+                //     setHasMore(true);
+                //     setDraws(res.data);
+                //     return;
+                // }
+                // if (res && res.data.length == 0){
+                //     setHasMore(false)
+                //     return;
+                // }
+                // if(res && res.data.length< limit){
+                //     setHasMore(false)
+                //     setDraws(res.data);
+                //     return;
+                // }
             })
         }
         run();
     }, []);
 
-    const loadMore = async () => {
-        fetchdraws("", draws.length, limit).then((res) => {
-            if (res && res.data.length === limit) {
-                setHasMore(true);
-                setDraws((prevDraws) => [...prevDraws, ...res.data]);
-                return;
-            }
-            if (res && res.data.length == 0){
-                setHasMore(false)
-                return;
-            }
-            if(res && res.data.length< limit){
-                setHasMore(false)
-                setDraws((prevDraws) => [...prevDraws, ...res.data]);
-                return;
-            }
-        })
-    }
+    // const loadMore = async () => {
+    //     fetchdraws("", draws.length, limit).then((res) => {
+    //         if (res && res.data.length === limit) {
+    //             setHasMore(true);
+    //             setDraws((prevDraws) => [...prevDraws, ...res.data]);
+    //             return;
+    //         }
+    //         if (res && res.data.length == 0) {
+    //             setHasMore(false)
+    //             return;
+    //         }
+    //         if (res && res.data.length < limit) {
+    //             setHasMore(false)
+    //             setDraws((prevDraws) => [...prevDraws, ...res.data]);
+    //             return;
+    //         }
+    //     })
+    // }
+
+    const fetchMoreItems = async (page:number) => {
+        getGround(page).then((res) => {
+            setDraws((prevDraws) => [...prevDraws, ...res]);
+            setPage(page + 1);
+        });
+    };
+
+    const settingColumns = useCallback(() => {
+        if(window.innerWidth >= 1400) return 4
+        if(window.innerWidth >= 800) return 3
+        if(window.innerWidth >= 500) return 2
+        return 1
+    }, [])
+
+    const [column, setColumn] = useState(() => settingColumns())
+
 
 
     return (
@@ -85,40 +111,50 @@ export function Ground() {
                     </div>
                 </div>
             </div>
-            <div id="ground" className={styles["ground"]}>
-                <Cover open={open} onClose={() => setOpen(false)} draw={selectDraw}/>
-                <div className={styles["ground-container"]}>
-                    <InfiniteScroll
-                        dataLength={draws.length}
-                        next={loadMore}
-                        hasMore={hasMore}
-                        loader={<span className={styles["load-more"]}>加载中...</span>}
-                        scrollableTarget="ground"
-                        className={styles["ground__draws-scroll"]}
-                    >
-                        <div className={styles["ground__draws"]}>
-                            {draws?.map((item: FetchParams, index: number) => (
-                                <div key={index} className={styles["ground__draw-content"]} onClick={() => {
-                                    setSelectDraw(item);
-                                    setOpen(true);
-                                }}>
-                                    <Image layout="fill" src={item.imageUrl} alt={item.id}
-                                           className={styles["ground__draw-img"]}/>
-                                    {/*<img src={draw.imageUrl} alt="" className={styles["ground__draw-img"]}/>*/}
-                                    <div className={styles["ground__draw-info"]}>
-                                        <div className={styles["ground__draw-info-content"]}>
-                                            <span>{item.user_name?.substring(0, 3) + "******" + item.user_name?.substring(9)}</span>
-                                            <p>{item.prompt.slice(0, 40)}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+            <Cover open={open} onClose={() => setOpen(false)} onDrawImg={selectDraw}/>
 
-                    </InfiniteScroll>
-                    {!hasMore && (<span className={styles["load-more"]}>到底了...</span>)}
-                </div>
-            </div>
+            <Masonry columns={{ 640: 2, 768: 2, 1024: 5, 1280: 10 }} gap={5} style={{
+                margin: "0 auto",
+                overflowY: "auto",
+                overflowX: "hidden",
+                width: "100%",
+                height: "100%",
+                padding: "0 10px"
+            }}>
+                {draws.map((item,index) => {
+                    return (
+                        <div key={item._id} className={styles['mItem']} onClick={() => {
+                            setSelectDraw(item);
+                            setOpen(true);
+                        }}>
+                            <Image key={index} layout="fill" src={item.uri} alt={item._id}
+                                   className={styles["ground__draw-img"]}
+                            />
+                        </div>
+                    );
+                })}
+            </Masonry>
+            {/*<Masonry*/}
+            {/*    items={draws}*/}
+            {/*    columnGutter={4}*/}
+            {/*    columnWidth={200}*/}
+            {/*    style={{margin: "0 auto",overflowY:"auto",overflowX:"hidden"}}*/}
+            {/*    // onRender={maybeLoadMore}*/}
+            {/*    overscanBy={5}*/}
+            {/*    render={(item, index) => {*/}
+            {/*        return (*/}
+            {/*            <div key={index} className={styles['mItem']} onClick={() => {*/}
+            {/*                setSelectDraw(item.data);*/}
+            {/*                setOpen(true);*/}
+            {/*            }}>*/}
+            {/*                <Image layout="fill" src={item.data.uri} alt={item.data._id}*/}
+            {/*                       className={styles["ground__draw-img"]}*/}
+            {/*                />*/}
+            {/*            </div>*/}
+            {/*        )*/}
+            {/*    }}*/}
+            {/*/>*/}
         </>
     )
 }
+

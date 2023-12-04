@@ -4,9 +4,11 @@ import styles from "./draw.module.scss";
 import {Draws} from "@/app/api/backapi/types";
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Image from "next/image";
+import {drawRes} from "@/app/api/back/types";
 
 interface imgProps {
     draw?: Draws;
+    onDrawImg?:drawRes;
 }
 
 const ImgViewer = (props: imgProps) => {
@@ -35,7 +37,7 @@ const ImgViewer = (props: imgProps) => {
                     {({setTransform}) => (
                         <React.Fragment>
                             <TransformComponent>
-                                <Image src={props.draw?.imageUrl || ""} alt={props.draw?.imageUrl || ""} layout="fill"
+                                <Image src={props.onDrawImg?.uri || ""} alt={props.onDrawImg?.uri || ""} layout="fill"
                                        className={styles["image-viewer-img"]}/>
                             </TransformComponent>
                             <input

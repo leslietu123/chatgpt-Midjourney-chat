@@ -29,7 +29,7 @@ const nextConfig = {
   output: mode,
   images: {
     unoptimized: mode === "export",
-    domains: ['midcdn.aispace.site','midcdn.funny-code.top','cdn.bsad.top'],
+    domains: ['midcdn.aispace.site','midcdn.funny-code.top','cdn.bsad.top','cdn.funny-code.top'],
 
   },
   experimental: {
@@ -85,6 +85,10 @@ if (mode !== "export") {
         source: "/api/shop-api/:path*",
         destination: `${API_URL}/:path*`,
       },
+      {
+        source: "/api/back/mj/:path*",
+        destination: "http://localhost:3005/:path*",
+      }
     ];
 
     const apiUrl = process.env.API_URL;

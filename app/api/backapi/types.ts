@@ -1,4 +1,5 @@
 import {getPointsTransaction} from "@/app/api/backapi/user";
+import {Feature, Prompt} from "@/app/api/back/types";
 
 export interface ImagineParams {
     base64?: string;
@@ -141,7 +142,7 @@ export interface PointsTransaction {
 
 
 export interface PointsListProps {
-    email: string;
+    email?: string;
     index?: number;
 }
 
@@ -241,3 +242,60 @@ export interface Draws {
     status: string;
     submitTime: number;
 }
+
+export type Modle = {
+    id: number;
+    name: string;
+    title: string;
+    img: string;
+    value: string;
+}
+
+export type Size = {
+    id: number;
+    name: string;
+    title: string;
+    value: string;
+    style?: string;
+}
+
+export type Iw ={
+    id: number;
+    name: string;
+    title: string;
+    value: string;
+    style?: string;
+}
+
+export type Quality = {
+    id: number;
+    name: string;
+    description: string;
+    value: string;
+}
+export type Version = {
+    id: number;
+    name: string;
+    description: string;
+    value: string;
+}
+
+export type promptGen = {
+    model?: Modle;
+    content?: string;
+    style?: string;
+    size?: Size;
+    quality?: Quality;
+    version?: Version;
+    chaos?: number;
+    styled?: number;
+    stop?: number;
+    weird?: number;
+    tile?: string;
+    seed?: number;
+    prompt?: any[];
+    selectedPrompt: Prompt[];
+    images?: string[];
+    iw?: string;
+}
+

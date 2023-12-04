@@ -25,6 +25,8 @@ import {nanoid} from "nanoid";
 import {CheckoutParams, CheckoutRes} from "@/app/api/backapi/types";
 import {Checkout} from "@/app/api/backapi/checkout";
 import {useState} from "react";
+import {checkout} from "@/app/api/back/shop";
+import {userAction} from "@/app/api/back/types";
 
 export type ChatMessage = RequestMessage & {
     date: string;
@@ -102,7 +104,7 @@ interface ChatStore {
     currentSession: () => ChatSession;
     nextSession: (delta: number) => void;
     onNewMessage: (message: ChatMessage) => void;
-    onUserInput: (content: string, extAttr?: any, userInfo?: any, transaction_id?: string, notGpt4?: boolean) => Promise<void>;
+    onUserInput: (content: string, extAttr?: any, notGpt4?: boolean) => Promise<void>;
     summarizeSession: () => void;
     updateStat: (message: ChatMessage) => void;
     updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -395,7 +397,7 @@ export const useChatStore = create<ChatStore>()(
                 }, 3000);
             },
 
-            async onUserInput(content, extAttr?: any, userInfo?: any, transaction_id?: any, notGpt4?: any) {
+            async onUserInput(content, extAttr?: any, notGpt4?: any) {
                 const session = get().currentSession();
                 const modelConfig = session.mask.modelConfig;
 
@@ -553,24 +555,21 @@ export const useChatStore = create<ChatStore>()(
                 } else {
 
                     // make request
-                    api.llm.chat({
+                    await api.llm.chat({
                         messages: sendMessages,
                         config: {...modelConfig, stream: true},
-                        onUpdate(message) {
+                        async onUpdate(message) {
                             botMessage.streaming = true;
                             if (message) {
                                 botMessage.content = message;
-                                const checkoutData: CheckoutParams = {
-                                    user_email: userInfo.email,
-                                    user_id: userInfo.id.toString(),
-                                    transaction_id: transaction_id ? transaction_id : "",
-                                    points: `${!notGpt4 ? process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE_GPT4 : process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE}`,
-                                    action: `${!notGpt4 ? "3" : "1"}`,
-                                    note_data: `${!notGpt4 ? "GPT4消耗" : "GPT3.5消耗"}`,
-                                }
-                                if(!payed){
-                                    Checkout(checkoutData);
+                                if (!payed) {
                                     payed = true;
+                                    const res = await checkout(notGpt4 ? userAction.gpt3_5 : userAction.gpt4_0)
+                                    if (res.status) {
+                                        console.log(res.msg)
+                                    } else {
+                                        payed = false;
+                                    }
                                 }
                             }
 

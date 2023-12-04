@@ -103,6 +103,7 @@
     .modal-title {
       font-weight: bolder;
       font-size: 16px;
+      color: var(--black) !important;
     }
 
     .modal-header-actions {
@@ -126,6 +127,7 @@
     max-height: 40vh;
     padding: var(--modal-padding);
     overflow: auto;
+    color: var(--black) !important;
   }
 
   .modal-footer {

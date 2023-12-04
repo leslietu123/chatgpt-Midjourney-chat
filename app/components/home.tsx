@@ -1,6 +1,7 @@
 "use client";
 
 import {LeftSidebar} from "@/app/components/left-sidebar";
+
 require("../polyfill");
 import React, {useState, useEffect} from "react";
 import styles from "./home.module.scss";
@@ -23,9 +24,11 @@ import ChatIcon from "@/app/icons/chat.svg";
 import {IconButton} from "@/app/components/button";
 import PopUp from "@/app/components/pop";
 import {getLocalUserInfo, isLogin} from "@/app/api/backapi/user";
+import {ChakraProvider} from "@chakra-ui/react";
 
 
-mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, { debug: true });
+mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, {debug: true});
+
 export function Loading(props: { noLogo?: boolean }) {
     return (
         <div className={styles["loading-content"] + " no-dark"}>
@@ -163,9 +166,9 @@ function Screen() {
         getLocalUserInfo().then(r => {
             mixpanel.track(`浏览${location.pathname}`, {
                 "页面路径": location.pathname,
-                "是否登录":isSignIn,
-                "是否移动端":isMobileScreen,
-                "用户名":r.username ? r.username : "未登录",
+                "是否登录": isSignIn,
+                "是否移动端": isMobileScreen,
+                "用户名": r.username ? r.username : "未登录",
             });
         });
     }, [location.pathname]);
@@ -260,9 +263,11 @@ export function Home() {
 
     return (
         <ErrorBoundary>
-            <Router>
-                <Screen/>
-            </Router>
+
+                <Router>
+                    <Screen/>
+                </Router>
+
         </ErrorBoundary>
     );
 }

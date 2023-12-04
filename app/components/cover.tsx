@@ -3,7 +3,6 @@ import {IconButton} from "@/app/components/button";
 import React, {useState} from "react";
 import CloseIcon from "../icons/close.svg";
 import InfoIcon from "../icons/eye.svg";
-import {Draws} from "@/app/api/backapi/types";
 import CopyIcon from "@/app/icons/copy.svg";
 import {ChatAction} from "@/app/components/chat";
 import {showToast} from "@/app/components/ui-lib";
@@ -12,6 +11,7 @@ import fileDownload from 'js-file-download';
 import ImgViewer from "@/app/components/img-viewer";
 import {useMobileScreen} from "@/app/utils";
 import PopUp from "@/app/components/pop";
+import {drawRes} from "@/app/api/back/types";
 
 // import Image from 'next/image';
 
@@ -20,7 +20,7 @@ interface CoverProps {
     description?: string;
     onClose?: () => void;
     open?: boolean;
-    draw?: Draws;
+    onDrawImg?: drawRes;
 }
 
 export default function Cover(props: CoverProps) {
@@ -30,8 +30,7 @@ export default function Cover(props: CoverProps) {
 
     const copyPromptClipboard = async () => {
         try {
-
-            await navigator.clipboard.writeText(props.draw?.prompt || "");
+            await navigator.clipboard.writeText(props.onDrawImg?.prompt || "");
             showToast("已复制到剪切板");
         } catch (err) {
             showToast("复制失败");
@@ -39,19 +38,9 @@ export default function Cover(props: CoverProps) {
         }
     };
 
-    const copyPromptEnClipboard = async () => {
-        try {
-
-            await navigator.clipboard.writeText(props.draw?.promptEn || "");
-            showToast("已复制到剪切板");
-        } catch (err) {
-            showToast("复制失败");
-            console.error('复制失败: ', err);
-        }
-    };
 
     async function handleDownload() {
-        const url = props.draw?.imageUrl || "";
+        const url = props.onDrawImg?.uri || "";
         setDownloading(true);
         showToast("下载中...")
         const response = await fetch(url);
@@ -76,19 +65,11 @@ export default function Cover(props: CoverProps) {
                             <ChatAction text="" icon={<CopyIcon/>} style={{marginTop: "3px"}}
                                         onClick={copyPromptClipboard}/>
                         </div>
-                        <span>{props.draw?.prompt}</span>
-                    </div>
-                    <div className={styles["cover-content-info-prompt"]}>
-                        <div className={styles["cover-content-info-action"]}>
-                            <h5>英文提示词：</h5>
-                            <ChatAction text="" icon={<CopyIcon/>} style={{marginTop: "3px"}}
-                                        onClick={copyPromptEnClipboard}/>
-                        </div>
-                        <span>{props.draw?.promptEn}</span>
+                        <span>{props.onDrawImg?.content}</span>
                     </div>
                     <div className={styles["cover-content-user-info"]}>
-                        <span>{"#" + props.draw?.user_name?.substring(0, 3) + "******" + props.draw?.user_name?.substring(9)}</span>
-                        <span>{props.draw?.submitTime ? new Date(parseFloat(String(props.draw?.submitTime))).toLocaleString() : ""}</span>
+                        <span>{"#" + props.onDrawImg?.user?.name.substring(0, 3) + "******" + props.onDrawImg?.user?.name?.substring(9)}</span>
+                        <span>{props.onDrawImg?.created_at ? new Date(parseFloat(String(props.onDrawImg?.created_at))).toLocaleString() : ""}</span>
                     </div>
                 </div>
             </PopUp>
@@ -129,7 +110,7 @@ export default function Cover(props: CoverProps) {
                         <div className={styles["cover-content-img-content"]}>
 
                             {/*<img className={styles["cover-content-image"]}  src={props.draw?.imageUrl ? props.draw.imageUrl : "" } alt=""/>*/}
-                            <ImgViewer draw={props.draw}/>
+                            <ImgViewer onDrawImg={props.onDrawImg}/>
                         </div>
 
                     </div>
@@ -141,19 +122,11 @@ export default function Cover(props: CoverProps) {
                                     <ChatAction text="" icon={<CopyIcon/>} style={{marginTop: "3px"}}
                                                 onClick={copyPromptClipboard}/>
                                 </div>
-                                <span>{props.draw?.prompt}</span>
-                            </div>
-                            <div className={styles["cover-content-info-prompt"]}>
-                                <div className={styles["cover-content-info-action"]}>
-                                    <h5>英文提示词：</h5>
-                                    <ChatAction text="" icon={<CopyIcon/>} style={{marginTop: "3px"}}
-                                                onClick={copyPromptEnClipboard}/>
-                                </div>
-                                <span>{props.draw?.promptEn}</span>
+                                <span>{props.onDrawImg?.prompt}</span>
                             </div>
                             <div className={styles["cover-content-user-info"]}>
-                                <span>{"#" + props.draw?.user_name?.substring(0, 3) + "******" + props.draw?.user_name?.substring(9)}</span>
-                                <span>{props.draw?.submitTime ? new Date(parseFloat(String(props.draw?.submitTime))).toLocaleString() : ""}</span>
+                                <span>{"#" + props.onDrawImg?.user?.name.substring(0, 3) + "******" + props.onDrawImg?.user?.name.substring(9)}</span>
+                                <span>{props.onDrawImg?.created_at ? new Date(parseFloat(String(props.onDrawImg?.created_at))).toLocaleString() : ""}</span>
                             </div>
                         </div>
 
