@@ -38,7 +38,7 @@
 
 @mixin dark {
   --theme: dark;
-  --card-bg: #101010;
+  --card-bg: rgba(24, 13, 0, 0.9);
   /* color */
   --white: rgb(33, 18, 0);
   --bg: var(--white);

@@ -1,6 +1,6 @@
 import {itemUV, Iw, Modle, Quality, Size, Version} from "./api/backapi/types";
 import {Path} from "@/app/constant";
-import { HiPaintBrush,HiMiniHome,HiChatBubbleLeftRight, HiMiniSparkles } from "react-icons/hi2";
+import { HiPaintBrush,HiMiniHome,HiChatBubbleLeftRight, HiMiniSparkles, HiMiniEllipsisHorizontal } from "react-icons/hi2";
 import {Icon} from "@chakra-ui/react";
 import {ReactComponentElement} from "react";
 
@@ -141,6 +141,16 @@ export const menu:IMenu[] = [
         icon_light: "./ground-light.svg",
         icon_active: "./ground-active.svg",
         path: Path.Ground,
+        path_name: "/ground",
+    },
+    {
+        name: "Ground",
+        title: "更多功能开发中",
+        icon: <Icon as={HiMiniEllipsisHorizontal} width="20px" height="20px" color="inherit" />,
+        icon_dark: "./ground-dark.svg",
+        icon_light: "./ground-light.svg",
+        icon_active: "./ground-active.svg",
+        path: '#',
         path_name: "/ground",
     }
 ]
