@@ -37,9 +37,11 @@ export function LeftSidebar() {
                         {menu.map((item, index) => {
                             // @ts-ignore
                             return (
-                                <Link className={`${styles["left-sidebar-content-item"]} ${styles["popup"]}`}
+                                <Link className={`${styles["left-sidebar-content-item"]} ${styles["popup"]} ${location.pathname === item.path ? styles["active"] : ""}`}
                                       key={item.name}
-                                      to={item.path} title={item.title}>
+                                      to={item.path}
+                                      title={item.title}
+                                >
                                     {item.icon}
                                 </Link>
                             )
@@ -49,21 +51,21 @@ export function LeftSidebar() {
                     <div className={styles["left-sidebar-bottom"]}>
                         <Link className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="points"
                               to={Path.BuyPoints} title="积分充值">
-                            <Icon as={RiVipCrownFill} width="15px" height="15px" color="#8b00ff" />
+                            <Icon as={RiVipCrownFill} width="15px" height="15px" color="#8b00ff"/>
                             {/*<img width={25} src={theme === "dark" ? "./points-light.svg" : "./points-dark.svg"} alt=""/>*/}
                         </Link>
                         <div className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="theme"
                              onClick={nextTheme} title="主题">
-                            <Icon as={RiFlashlightFill} width="15px" height="15px" color="inherit" />
+                            <Icon as={RiFlashlightFill} width="15px" height="15px" color="inherit"/>
                         </div>
                         <Link className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="settings"
                               title="设置"
                               to={Path.Settings}>
-                            <Icon as={RiSettingsFill} width="15px" height="15px" color="inherit" />
+                            <Icon as={RiSettingsFill} width="15px" height="15px" color="inherit"/>
                         </Link>
                         <Link className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="profile"
                               title="个人中心" to={Path.SignUp}>
-                            <Icon as={RiUser6Fill} width="15px" height="15px" color="inherit" />
+                            <Icon as={RiUser6Fill} width="15px" height="15px" color="inherit"/>
                         </Link>
 
                     </div>

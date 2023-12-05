@@ -90,11 +90,13 @@ import {getClientConfig} from "../config/client";
 import {ChatList} from "./chat-list";
 import {SideBar} from "./sidebar";
 import {fetchUserInfo, isLogin} from "@/app/api/backapi/user";
-import {CheckoutParams, CheckoutRes, CheckPointsParams, User} from "@/app/api/backapi/types";
 import {Checkout, CheckPoints} from "@/app/api/backapi/checkout";
 import {theme} from "antd";
 import {checkInfo} from "@/app/api/back/shop";
 import {userAction} from "@/app/api/back/types";
+import {initUser} from "@/app/components/profile";
+import { User} from "@/app/api/back/types";
+import {getMe} from "@/app/api/back/user";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
     loading: () => <LoadingIcon/>,
@@ -652,6 +654,8 @@ export function EditMessageModal(props: { onClose: () => void }) {
 function _Chat() {
     type RenderMessage = ChatMessage & { preview?: boolean };
     const islogin = isLogin();
+    const userToken = localStorage.getItem("user_token");
+    const [userInfo, setUserInfo] = React.useState<User>(initUser);
     const chatStore = useChatStore();
     const session = chatStore.currentSession();
     const config = useAppConfig();
@@ -671,6 +675,15 @@ function _Chat() {
     const navigate = useNavigate();
     const theme = useAppConfig().theme;
 
+
+    useEffect(() => {
+            if (userToken && userToken !== "") {
+                getMe().then(r => {
+                    setUserInfo(r);
+                });
+            }
+        }
+        , [])
 
     // prompt hints
     const promptStore = usePromptStore();
@@ -1139,9 +1152,11 @@ function _Chat() {
                         >
                             {!session.topic ? DEFAULT_TOPIC : session.topic}
                         </div>
-                        <div className="window-header-sub-title">
-                            {`${notGpt4 ? currentModel + ` # ${process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE}ai币/次` : currentModel + ` # ${process.env.NEXT_PUBLIC_POINTS_COST_PRE_MESSAGE_GPT4}ai币/次`}`}
-                        </div>
+                        {userInfo && userInfo._id !== "" && !userInfo.member.point.unlimited &&(
+                            <div className="window-header-sub-title">
+                                {`${notGpt4 ? currentModel + ` # ${userInfo.member.point.consumption.gpt3_5}积分/次` : currentModel + ` # ${userInfo.member.point.consumption.gpt4_0}积分/次`}`}
+                            </div>
+                        )}
                     </div>
                     <div className="window-actions">
                         {!isMobileScreen && (

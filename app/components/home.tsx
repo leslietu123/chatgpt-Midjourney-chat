@@ -184,27 +184,27 @@ function Screen() {
                 } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
             }
         >
-            {isShowKefu && (
-                <>
-                    <PopUp title="在线客服" open={showKefu} onClick={() => setShowKefu(false)}
-                           buttonText="我知道了" onClose={() => setShowKefu(false)}>
-                        <div className={styles["kefu-btn-content"]}>
-                            <img className={styles["kefu-btn-img"]} src="./kefu.jpg" alt=""/>
-                            <div className={styles["kefu-btn-text"]}>
-                                <p>扫描上方二维码联系我们！</p>
-                            </div>
-                        </div>
-                    </PopUp>
-                    <div className={styles["kefu-btn"]}>
-                        <IconButton
-                            icon={<ChatIcon/>}
-                            className={styles["kefu-btn-icon"]}
-                            onClick={() => setShowKefu(true)}
-                            bordered
-                        />
-                    </div>
-                </>
-            )}
+            {/*{isShowKefu && (*/}
+            {/*    <>*/}
+            {/*        <PopUp title="在线客服" open={showKefu} onClick={() => setShowKefu(false)}*/}
+            {/*               buttonText="我知道了" onClose={() => setShowKefu(false)}>*/}
+            {/*            <div className={styles["kefu-btn-content"]}>*/}
+            {/*                <img className={styles["kefu-btn-img"]} src="./kefu.jpg" alt=""/>*/}
+            {/*                <div className={styles["kefu-btn-text"]}>*/}
+            {/*                    <p>扫描上方二维码联系我们！</p>*/}
+            {/*                </div>*/}
+            {/*            </div>*/}
+            {/*        </PopUp>*/}
+            {/*        <div className={styles["kefu-btn"]}>*/}
+            {/*            <IconButton*/}
+            {/*                icon={<ChatIcon/>}*/}
+            {/*                className={styles["kefu-btn-icon"]}*/}
+            {/*                onClick={() => setShowKefu(true)}*/}
+            {/*                bordered*/}
+            {/*            />*/}
+            {/*        </div>*/}
+            {/*    </>*/}
+            {/*)}*/}
 
             {isAuth ? (
                 <>

@@ -31,12 +31,14 @@ import {
     sendImagine,
     shareToGround,
 } from "@/app/api/back/mj";
-import {Action, drawRes, Feature, Prompt} from "@/app/api/back/types";
+import {Action, drawRes, Feature, Prompt, User} from "@/app/api/back/types";
 import {Box, ChakraProvider, Flex, Link, Select, Spacer, Tooltip} from "@chakra-ui/react";
 import {NotAllowedIcon, WarningIcon} from "@chakra-ui/icons";
 import io from "socket.io-client";
 import {getTransResult} from "../api/translate/api";
 import chakraTheme from "@/app/thems";
+import {initUser} from "@/app/components/profile";
+import {getMe} from "@/app/api/back/user";
 
 
 const {TextArea} = Input;
@@ -69,6 +71,8 @@ const initialState: promptGen = {
 
 export function Draw() {
     let limit = 20;
+    const userToken = localStorage.getItem("user_token");
+    const [userInfo, setUserInfo] = React.useState<User>(initUser);
     const theme = useAppConfig().theme;
     const navigate = useNavigate();
     const islogin = isLogin();
@@ -89,7 +93,16 @@ export function Draw() {
     const [drawResList, setDrawResList] = useState<drawRes[]>([] as drawRes[])
     const strPrompt = `${prompt.content}${prompt.selectedPrompt.length > 0 ? `,${prompt.selectedPrompt.map(item => item.prompt).join(",")}` : ''}${prompt.model?.value}${prompt.size?.value}${prompt.chaos !== 0 ? ` --chaos ${prompt.chaos}` : ""}${parentImages.length > 0 ? prompt.iw : ""}${prompt.styled !== 0 ? ` --s ${prompt.styled}` : ""}${prompt.stop !== 100 ? ` --stop ${prompt.stop}` : ""}${prompt.weird !== 0 ? ` --weird ${prompt.weird}` : ""}${prompt.tile ? ' --tile' : ""}${prompt.seed !== 0 ? ` --seed ${prompt.seed}` : ""}${prompt.quality?.value}${prompt.version?.value}`
     const [page, setPage] = useState(1)
-    console.log(strPrompt)
+
+
+    useEffect(() => {
+            if (userToken && userToken !== "") {
+                getMe().then(r => {
+                    setUserInfo(r);
+                });
+            }
+        }
+        , [])
 
     const handleFetchPromptList = (id: string) => {
         setSelectedFeature(featureList.find(item => item._id === id) as Feature);
@@ -166,8 +179,12 @@ export function Draw() {
             navigate(Path.SignIn)
             return
         }
-        if (prompt.content === "" || prompt.content === undefined) {
+        if ((prompt.content === "" || prompt.content === undefined) && active !== 1 && data.action !== Action.BLEND && data.action !== Action.CUSTOM) {
             showToast("请输入描述")
+            return
+        }
+        if(parentImages.length === 0 && active === 1){
+            showToast("请上传图片")
             return
         }
         setDrawing(true);
@@ -1067,7 +1084,6 @@ export function Draw() {
                                             })
                                         }
                                     ) : (
-                                        // handleGetImgsUrl
                                         () => {
                                             handleSubmit({
                                                 action: Action.BLEND,
@@ -1077,7 +1093,9 @@ export function Draw() {
                                     disabled={drawing || submitting}
                                     className={`${submitting || drawing ? styles["draw-submitting"] : ""}`}>
                                     {drawing ? ("绘图中...") : (submitting ? ("提交中...") : ("提交绘画"))}
-                                    <span>消耗{process.env.NEXT_PUBLIC_POINTS_COST_PRE_DRAW}AI币</span>
+                                    {userInfo && userInfo._id !== "" && !userInfo.member.point.unlimited && (
+                                        <span>消耗{userInfo.member.point.consumption.mj}积分</span>
+                                    )}
                                 </button>
                             </div>
 

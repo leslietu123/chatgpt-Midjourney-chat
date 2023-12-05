@@ -25,6 +25,37 @@ async function fetchTransaction(email: string, index: number) {
     return await getPointsTransaction(email, index);
 }
 
+export const initUser={
+    _id: "",
+    name: "",
+    phone: "",
+    member: {
+        _id: "",
+        name: "",
+        length: 0,
+        unlimited: false,
+        point: {
+            _id: "",
+            name: "",
+            points: 0,
+            unlimited: false,
+            consumption: {
+                mj: 0,
+                gpt3_5: 0,
+                gpt4_0: 0
+            }
+        },
+    },
+    memberInfo: {
+        start_at: "",
+        end_at: "",
+        points: 0,
+        status: ""
+    },
+    created_at: "",
+    updated_at: ""
+} as unknown as User
+
 function PointsList(props: PointsListProps) {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<Log[]>([] as Log[]);
@@ -111,36 +142,7 @@ function PointsList(props: PointsListProps) {
 export function UserProfile() {
     const navigate = useNavigate();
     const userToken = localStorage.getItem("user_token");
-    const [userInfo, setUserInfo] = React.useState<User>({
-        _id: "",
-        name: "",
-        phone: "",
-        member: {
-            _id: "",
-            name: "",
-            length: 0,
-            unlimited: false,
-            point: {
-                _id: "",
-                name: "",
-                points: 0,
-                unlimited: false,
-                consumption: {
-                    mj: 0,
-                    gpt3_5: 0,
-                    gpt4_0: 0
-                }
-            },
-        },
-        memberInfo: {
-            start_at: "",
-            end_at: "",
-            points: 0,
-            status: ""
-        },
-        created_at: "",
-        updated_at: ""
-    } as unknown as User);
+    const [userInfo, setUserInfo] = React.useState<User>(initUser);
 
     const [loading, setLoading] = React.useState(false);
     const [showShareInfo, setShowShareInfo] = React.useState(false);

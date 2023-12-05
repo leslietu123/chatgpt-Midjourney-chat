@@ -4,7 +4,7 @@
   box-sizing: border-box;
   background-color: var(--bg-transparent);
   backdrop-filter: blur(3px);
-  border-radius: 100px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -39,9 +39,12 @@
 
 .left-sidebar-content-item {
   padding: 20px;
-  background-color: var(--bg-transparent);
   margin: 10px 0px;
   border-radius: 10px;
+}
+
+.active{
+    background: var(--sidebar-item-bg);
 }
 
 .left-sidebar-bottom {

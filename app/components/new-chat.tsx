@@ -139,8 +139,8 @@ export function NewChat() {
 
                 <div className={styles["new-chat-left-header"]}>
                     <img src={theme === "dark" ? "./site-logo.png":"./site-logo-light.png"} alt=""/>
-                    <div className={styles["new-chat-left-title"]}>{process.env.NEXT_PUBLIC_SITE_SLOGEN}</div>
-                    <div className={styles["new-chat-left-sub-title"]}>{process.env.NEXT_PUBLIC_SITE_SUB_SLOGEN}</div>
+                    <h1 className={styles["new-chat-left-title"]}>{process.env.NEXT_PUBLIC_SITE_SLOGEN}</h1>
+                    <h2 className={styles["new-chat-left-sub-title"]}>{process.env.NEXT_PUBLIC_SITE_SUB_SLOGEN}</h2>
                     <div className={styles["new-chat-left-header-content"]}>
                         {homelist.item1.map((item, index) => (
                             <button type="button" key={item.id} className={styles["new-chat-left-header-left"]} onClick={()=>navigate(item.path)}>

@@ -4,8 +4,6 @@ import { HiPaintBrush,HiMiniHome,HiChatBubbleLeftRight, HiMiniSparkles, HiMiniEl
 import {Icon} from "@chakra-ui/react";
 import {ReactComponentElement} from "react";
 
-
-
 export const models: Modle[] = [
     {id: 1, name: "midjourney", title: "MJ", img: "./midjourney.jpg", value: ""},
     {id: 2, name: "niji", title: "Niji", img: "./niji.jpg", value: " --niji"},

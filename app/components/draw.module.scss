@@ -131,7 +131,7 @@
 .draw-list-item-active {
   border: var(--draw-img-border);
   border-radius: 10px;
-  padding: 3px;
+  padding: 5px;
 }
 
 .draw-img-info-item-date {
@@ -139,7 +139,6 @@
 }
 
 .drawing-body {
-  background-color: var(--bg-transparent);
   z-index: 99;
   position: absolute;
   bottom: 0;
@@ -174,7 +173,7 @@
   overflow: auto;
   scrollbar-width: none;
   scrollbar-color: transparent transparent;
-  padding: 0 0 100px 0;
+  padding-bottom: 20px;
 }
 
 .draw-left-header {
@@ -584,7 +583,8 @@
   }
 
   .draw-list-item {
-    margin: 5px 0;
+    margin: 20px;
+    box-sizing: border-box;
 
     .draw-list-img {
       img {

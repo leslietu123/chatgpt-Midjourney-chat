@@ -113,7 +113,7 @@ console.log(page)
             </div>
             <Cover open={open} onClose={() => setOpen(false)} onDrawImg={selectDraw}/>
 
-            <Masonry columns={{ 640: 2, 768: 3, 1024: 4,1280:5, 1600: 6 }} gap={2} style={{
+            <Masonry columns={{ 640: 2, 768: 3, 1024: 4,1280:5, 1600: 6 }} gap={3} style={{
                 margin: "0 auto",
                 overflowY: "auto",
                 overflowX: "hidden",
