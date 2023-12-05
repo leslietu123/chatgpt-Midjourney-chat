@@ -14,7 +14,7 @@ import {useCommand} from "../command";
 import {BUILTIN_MASK_STORE} from "../masks";
 import {useMobileScreen} from "@/app/utils";
 import {Masks} from "../masks/masks"
-import {homelist} from "../api/backapi/static"
+import {homelist} from "../static"
 import {Link} from "react-router-dom";
 
 
@@ -138,6 +138,7 @@ export function NewChat() {
             <div className={styles["new-chat-left"]}>
 
                 <div className={styles["new-chat-left-header"]}>
+                    <img src={theme === "dark" ? "./site-logo.png":"./site-logo-light.png"} alt=""/>
                     <div className={styles["new-chat-left-title"]}>{process.env.NEXT_PUBLIC_SITE_SLOGEN}</div>
                     <div className={styles["new-chat-left-sub-title"]}>{process.env.NEXT_PUBLIC_SITE_SUB_SLOGEN}</div>
                     <div className={styles["new-chat-left-header-content"]}>

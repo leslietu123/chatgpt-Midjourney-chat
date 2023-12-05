@@ -68,6 +68,13 @@ export type Point = {
     created_at: Date;
     updated_at: Date;
     status: Status;
+    unlimited: boolean;
+    consumption: consumption;
+}
+export interface consumption{
+    mj:number,
+    gpt3_5:number,
+    gpt4_0:number,
 }
 
 export type Member = {
@@ -81,6 +88,7 @@ export type Member = {
     point: Point;
     _id: string;
     status: Status;
+    unlimited: boolean;
 }
 
 export type MemberResponse = {

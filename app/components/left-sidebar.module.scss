@@ -1,14 +1,23 @@
 .left-sidebar {
   height: 100%;
   width: 6em;
-  background-color: var(--bg);
-  border-right: var(--border-in-light);
+  box-sizing: border-box;
+  background-color: var(--bg-transparent);
+  backdrop-filter: blur(3px);
+  border-radius: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: var(--border-in-light);
   padding-top: 20px;
   box-shadow: inset -1px 0px 0px 0px rgb(0, 0, 0, 0.05);
+}
+
+.left-sidebar-container{
+  padding: 50px 10px;
+  //border-right: var(--border-in-light);
+  z-index: 99;
 }
 
 .left-sidebar-content {
@@ -24,7 +33,7 @@
 .left-sidebar-bottom-item {
   padding: 10px;
   //background-color: var(--second);
-  margin: 10px 0px;
+  margin: 5px 0px;
   border-radius: 10px;
 }
 

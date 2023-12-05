@@ -19,6 +19,7 @@
     height: 16px;
     width: var(--icon-width);
     overflow: hidden;
+    box-sizing: initial !important;
 
     &:not(:last-child) {
       margin-right: 5px;

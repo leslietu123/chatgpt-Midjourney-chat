@@ -121,30 +121,9 @@ export function SideBar(props: { className?: string }) {
                 <div className={styles["sidebar-title"]} data-tauri-drag-region>
                     AI 对话
                 </div>
-                {/*<div className={styles["sidebar-sub-title"]}>*/}
-                {/*  Your own AI assistant.*/}
-                {/*</div>*/}
-                {/*<div className={styles["sidebar-logo"] + " no-dark"}>*/}
-                {/*  <ChatGptIcon />*/}
-                {/*</div>*/}
             </div>
 
-            <div className={styles["sidebar-header-bar"]}>
-                {/*<IconButton*/}
-                {/*    icon={<MaskIcon/>}*/}
-                {/*    text={shouldNarrow ? undefined : Locale.Mask.Name}*/}
-                {/*    className={styles["sidebar-bar-button"]}*/}
-                {/*    onClick={() => navigate(Path.NewChat, {state: {fromHome: true}})}*/}
-                {/*    shadow*/}
-                {/*/>*/}
-                {/*<IconButton*/}
-                {/*    icon={<GemIcon/>}*/}
-                {/*    text={shouldNarrow ? undefined : "Pro"}*/}
-                {/*    className={styles["sidebar-bar-button"]}*/}
-                {/*    onClick={() => window.open(REPO_URL + "-Pro", "_blank")}*/}
-                {/*    shadow*/}
-                {/*/>*/}
-            </div>
+
 
             <div
                 className={styles["sidebar-body"]}

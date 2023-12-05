@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {getPointsplan, creatOrder, getPaymentQrcode, checkOrder} from "../api/backapi/shop";
 import {IconButton} from "@/app/components/button";
 import CloseIcon from "@/app/icons/close.svg";
 import styles from './shop.module.scss';
@@ -9,14 +8,16 @@ import {useNavigate} from "react-router-dom";
 import {ErrorBoundary} from "@/app/components/error";
 import Loading from "./loader";
 import {useMobileScreen} from "@/app/utils";
-import {isWebApp, getUserInfo, isLogin} from "../api/backapi/user";
+import {isLogin, isWebApp} from "../api/backapi/user";
 import {showToast} from "@/app/components/ui-lib";
 import PopUp from "./pop";
-import {payment, point,} from "../api/backapi/types";
 import {useAppConfig} from "@/app/store";
-import {useage} from "../api/backapi/static";
 import {CreateOrder, Member, paymentMethod, PaymentMethod} from "@/app/api/back/types";
 import {checkOrderStatus, createNewOrder, getMembers, getPayments, Pay} from "@/app/api/back/shop";
+import {RiVipCrownFill, RiWechatPayFill} from "react-icons/ri";
+import {AiOutlineAlipay} from "react-icons/ai";
+
+import {Icon} from "@chakra-ui/react";
 
 mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, {debug: true});
 
@@ -185,16 +186,50 @@ export function Shop() {
                 <div className={styles["shop-body"]}>
                     {loading ? (<Loading/>) : (
                         <div className={styles["shop-card"]}>
-
-                            {members.sort((a, b) => a.price - b.price).map((item: Member, index: number) => (
+                            {members.length > 0 && members.sort((a, b) => a.price - b.price).map((item: Member, index: number) => (
                                 <div key={index}
                                      className={`${styles["shop-card-item"]} ${selectedMember._id == item._id ? styles["shop-card-item-selected"] : ""}`}
                                      onClick={() => setSelectedMember(item)}>
-
                                     <div className={styles["shop-card-item-title"]}>
-                                        {item.name}
+                                        {!item.unlimited ? item.name :
+                                            <Icon as={RiVipCrownFill} className="no-dark" width="15px" height="15px" color="inherit" style={{color:"#ffffff !important"}}/>}
+                                        {!item.point.unlimited && (
+                                            <div className={styles["shop-card-item-title-count"]}>
+                                                {item.point?.points + "积分"}
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className={styles["shop-card-price"]}>
+
+
+                                    {!item.point.unlimited && Object.entries(item.point?.consumption).map(([key, value]) => {
+                                        switch (key) {
+                                            case "gpt4_0":
+                                                key = "4.0消耗"
+                                                break;
+                                            case "gpt3_5":
+                                                key = "3.5消耗"
+                                                break;
+                                            case "mj":
+                                                key = "绘图"
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        return (
+                                            (
+                                                <div key={index} className={styles["shop-card-price"]}>
+                                                    <div className={styles["shop-card-price-title"]}>
+                                                        {key}
+                                                    </div>
+                                                    <div className={styles["shop-card-item-info"]}>
+                                                        {value}
+                                                    </div>
+                                                </div>
+                                            )
+                                        )
+                                    })}
+
+                                    <div className={`${styles["shop-card-price"]} ${styles.price}`}>
                                         <div className={styles["shop-card-price-title"]}>
                                             价格
                                         </div>
@@ -202,18 +237,6 @@ export function Shop() {
                                             ¥{item.price}
                                         </div>
                                     </div>
-                                    {useage.map((item: any, index: number) => (
-                                        <div key={item.id} className={styles["shop-card-price"]}>
-                                            <div className={styles["shop-card-price-title"]}>
-                                                {item.name}
-                                            </div>
-                                            <div className={styles["shop-card-item-info"]}>
-                                                {item.useage + "ai币/次"}
-                                            </div>
-                                        </div>
-                                    ))}
-
-
                                 </div>
                             ))}
                         </div>
@@ -228,12 +251,15 @@ export function Shop() {
                 <div className={`${styles["shop-body"]} ${styles["shop-body-mobile"]}`}>
                     {loading ? (<Loading/>) : (
                         <div className={styles["shop-card"]}>
-                            {pryment.map((item: PaymentMethod, index: number) => (
+                            {pryment.length > 0 && pryment.map((item: PaymentMethod, index: number) => (
                                 <div key={index}
                                      className={`${styles["shop-card-item"]} ${selectedPaymentMethod._id == item._id ? styles["shop-card-item-selected"] : ""}`}
                                      onClick={() => setSelectedPaymentMethod(item)}>
                                     <div
                                         className={`${styles["shop-card-item-title"]} ${styles["shop-card-item-title-payment"]}`}>
+                                        {item.method === paymentMethod.wechat ?
+                                            (<Icon as={RiWechatPayFill} width="25px" height="25px" color="inherit"/>)
+                                            : (<Icon as={AiOutlineAlipay} width="25px" height="25px" color="inherit"/>)}
                                         {item.method === paymentMethod.wechat ? "微信支付" : "支付宝支付"}
                                     </div>
                                 </div>

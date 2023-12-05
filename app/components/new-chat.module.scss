@@ -23,7 +23,7 @@
   background-position-x: 10% !important;
   background-repeat: no-repeat !important;
   background-size: 35%;
-  background-color: var(--bg);
+  //background-color: var(--bg);
 }
 
 .quick-start{
@@ -47,7 +47,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: start;
 }
 
 .new-chat-right {

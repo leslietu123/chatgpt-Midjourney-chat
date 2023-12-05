@@ -61,8 +61,8 @@ export default function RightDrawer(props: RightDrawerProps) {
                     <DrawerCloseButton/>
                     <DrawerHeader>提示词库</DrawerHeader>
                     <DrawerBody>
-                        <Grid templateColumns={isMobileScreen ? 'repeat(3, 1fr)':'repeat(12, 1fr)'} gap={3}>
-                            {props.featureList?.map((item, index) => {
+                        <Grid templateColumns={isMobileScreen ? 'repeat(3, 1fr)' : 'repeat(12, 1fr)'} gap={3}>
+                            {props.featureList && props.featureList?.length > 0 && props.featureList?.map((item, index) => {
                                 return (
                                     <GridItem
                                         onClick={() => {
@@ -89,7 +89,7 @@ export default function RightDrawer(props: RightDrawerProps) {
                             </AbsoluteCenter>
                         </Box>
                         <SimpleGrid columns={[2, null, 6]} gap={1}>
-                            {props.prompts?.map((item, index) => {
+                            {props.prompts && props.prompts.length > 0 && props.prompts?.map((item, index) => {
                                 return (
                                     <Box
                                         key={index}

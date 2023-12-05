@@ -113,13 +113,13 @@ console.log(page)
             </div>
             <Cover open={open} onClose={() => setOpen(false)} onDrawImg={selectDraw}/>
 
-            <Masonry columns={{ 640: 2, 768: 2, 1024: 5, 1280: 10 }} gap={5} style={{
+            <Masonry columns={{ 640: 2, 768: 3, 1024: 4,1280:5, 1600: 6 }} gap={2} style={{
                 margin: "0 auto",
                 overflowY: "auto",
                 overflowX: "hidden",
                 width: "100%",
                 height: "100%",
-                padding: "0 10px"
+                padding: "20px 10px"
             }}>
                 {draws.map((item,index) => {
                     return (
@@ -134,26 +134,6 @@ console.log(page)
                     );
                 })}
             </Masonry>
-            {/*<Masonry*/}
-            {/*    items={draws}*/}
-            {/*    columnGutter={4}*/}
-            {/*    columnWidth={200}*/}
-            {/*    style={{margin: "0 auto",overflowY:"auto",overflowX:"hidden"}}*/}
-            {/*    // onRender={maybeLoadMore}*/}
-            {/*    overscanBy={5}*/}
-            {/*    render={(item, index) => {*/}
-            {/*        return (*/}
-            {/*            <div key={index} className={styles['mItem']} onClick={() => {*/}
-            {/*                setSelectDraw(item.data);*/}
-            {/*                setOpen(true);*/}
-            {/*            }}>*/}
-            {/*                <Image layout="fill" src={item.data.uri} alt={item.data._id}*/}
-            {/*                       className={styles["ground__draw-img"]}*/}
-            {/*                />*/}
-            {/*            </div>*/}
-            {/*        )*/}
-            {/*    }}*/}
-            {/*/>*/}
         </>
     )
 }

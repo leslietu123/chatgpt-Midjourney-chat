@@ -14,7 +14,7 @@ import {DrawImg} from "./drawpic"
 import {isLogin} from "@/app/api/backapi/user";
 import ImageUploader from "./draw-imageuploader";
 import InfiniteScroll from "react-infinite-scroll-component";
-import {models, sizes, qualities, versions, iw} from "../api/backapi/static";
+import {models, sizes, qualities, versions, iw} from "../static";
 import {
     FetchParams,
 } from "../api/backapi/types";
@@ -36,6 +36,7 @@ import {Box, ChakraProvider, Flex, Link, Select, Spacer, Tooltip} from "@chakra-
 import {NotAllowedIcon, WarningIcon} from "@chakra-ui/icons";
 import io from "socket.io-client";
 import {getTransResult} from "../api/translate/api";
+import chakraTheme from "@/app/thems";
 
 
 const {TextArea} = Input;
@@ -241,7 +242,7 @@ export function Draw() {
 
 
     return (
-        <ChakraProvider>
+        <ChakraProvider theme={chakraTheme}>
             <ErrorBoundary>
                 {isMobileScreen && (
                     <Popup buttonText={drawing ? ("绘图中...") : (submitting ? ("提交中...") : ("提交绘画"))}
@@ -910,7 +911,9 @@ export function Draw() {
                                                 </Box>
                                                 <Spacer/>
                                                 <Box>
-                                                    <Tooltip size={"sm"} hasArrow label='参数释义：这个值越低会更符合 prompt 的描述，数值越高艺术性就会越强，但跟 prompt 关联性就会比较弱' bg='gray.300' color='black'>
+                                                    <Tooltip size={"sm"} hasArrow
+                                                             label='参数释义：这个值越低会更符合 prompt 的描述，数值越高艺术性就会越强，但跟 prompt 关联性就会比较弱'
+                                                             bg='gray.300' color='black'>
                                                         <WarningIcon/>
                                                     </Tooltip>
                                                 </Box>
@@ -938,7 +941,9 @@ export function Draw() {
                                                 </Box>
                                                 <Spacer/>
                                                 <Box>
-                                                    <Tooltip size={"sm"} hasArrow label='参数释义：数值越高，画面表现也会更具丰富性和艺术性' bg='gray.300' color='black'>
+                                                    <Tooltip size={"sm"} hasArrow
+                                                             label='参数释义：数值越高，画面表现也会更具丰富性和艺术性'
+                                                             bg='gray.300' color='black'>
                                                         <WarningIcon/>
                                                     </Tooltip>
                                                 </Box>
@@ -986,7 +991,9 @@ export function Draw() {
                                                 </Box>
                                                 <Spacer/>
                                                 <Box>
-                                                    <Tooltip size={"sm"} hasArrow label='参数释义：生成的图像引入奇特和离奇的特质，从而产生独特而意想不到的结果' bg='gray.300' color='black'>
+                                                    <Tooltip size={"sm"} hasArrow
+                                                             label='参数释义：生成的图像引入奇特和离奇的特质，从而产生独特而意想不到的结果'
+                                                             bg='gray.300' color='black'>
                                                         <WarningIcon/>
                                                     </Tooltip>
                                                 </Box>
@@ -1013,7 +1020,9 @@ export function Draw() {
                                                 </Box>
                                                 <Spacer/>
                                                 <Box>
-                                                    <Tooltip size={"sm"} hasArrow label='参数释义：使用"--stop"参数可以在作业进行到对应的任务百分比时终止任务，比如30，在任务的30%进度时停止' bg='gray.300' color='black'>
+                                                    <Tooltip size={"sm"} hasArrow
+                                                             label='参数释义：使用"--stop"参数可以在作业进行到对应的任务百分比时终止任务，比如30，在任务的30%进度时停止'
+                                                             bg='gray.300' color='black'>
                                                         <WarningIcon/>
                                                     </Tooltip>
                                                 </Box>

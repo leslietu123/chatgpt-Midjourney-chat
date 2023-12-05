@@ -72,6 +72,10 @@
   width: 100%;
 }
 
+.price{
+  margin-top: 10px;
+}
+
 .shop-card-price-title {
   font-size: 12px;
   font-weight: 300;
@@ -92,12 +96,22 @@
   margin-bottom: 10px;
   width: 100%;
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
 
   span {
     font-size: 12px;
     font-weight: 300;
     margin-left: 5px;
   }
+}
+
+.shop-card-item-title-count{
+  font-size: 12px;
+  font-weight: 300;
+  margin-top: 10px;
 }
 
 .shop-body {

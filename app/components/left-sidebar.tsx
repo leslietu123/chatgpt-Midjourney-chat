@@ -1,9 +1,12 @@
 import styles from "./left-sidebar.module.scss";
 import {Theme, useAppConfig} from "../store/config";
+import chakraTheme from "../thems";
 import {useLocation} from "react-router-dom";
 import {Path} from "../constant";
 import {Link} from "react-router-dom";
-import {menu} from "../api/backapi/static"
+import {menu} from "../static"
+import {ChakraProvider, Icon} from "@chakra-ui/react";
+import {RiFlashlightFill, RiSettingsFill, RiUser6Fill, RiVipCrownFill} from "react-icons/ri";
 
 
 export function LeftSidebar() {
@@ -22,50 +25,53 @@ export function LeftSidebar() {
 
 
     return (
-        <div className={styles["left-sidebar"]}>
+        <ChakraProvider theme={chakraTheme}>
+            <div className={styles["left-sidebar-container"]}>
+                <div className={styles["left-sidebar"]}>
 
-            <Link to={Path.Home}>
-                <img width={40} src="./ailogo.svg" alt="site-logo"/>
-            </Link>
+                    <Link to={Path.Home}>
+                        <img width={40} src="./tiny-logo.png" alt="site-logo"/>
+                    </Link>
 
-            <div className={styles["left-sidebar-content"]}>
-                {menu.map((item, index) => {
-                    // @ts-ignore
-                    return (
-                        <Link className={`${styles["left-sidebar-content-item"]} ${styles["popup"]}`} key={item.name}
-                              to={item.path} title={item.title}>
-                            <img
-                                width={25}
-                                src={
-                                    item.path_name === location.pathname ? (theme === "dark" ? item.icon_active : item.icon_active) : (theme === "dark" ? item.icon_dark : item.icon_light)
-                                }
-                                alt={item.name}
-                            />
+                    <div className={styles["left-sidebar-content"]}>
+                        {menu.map((item, index) => {
+                            // @ts-ignore
+                            return (
+                                <Link className={`${styles["left-sidebar-content-item"]} ${styles["popup"]}`}
+                                      key={item.name}
+                                      to={item.path} title={item.title}>
+                                    {item.icon}
+                                </Link>
+                            )
+                        })}
+                    </div>
+                    {/*<Popover children={} content={}/>*/}
+                    <div className={styles["left-sidebar-bottom"]}>
+                        <Link className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="points"
+                              to={Path.BuyPoints} title="积分充值">
+                            <Icon as={RiVipCrownFill} width="15px" height="15px" color="#8b00ff" />
+                            {/*<img width={25} src={theme === "dark" ? "./points-light.svg" : "./points-dark.svg"} alt=""/>*/}
                         </Link>
-                    )
-                })}
-            </div>
-            {/*<Popover children={} content={}/>*/}
-            <div className={styles["left-sidebar-bottom"]}>
+                        <div className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="theme"
+                             onClick={nextTheme} title="主题">
+                            <Icon as={RiFlashlightFill} width="15px" height="15px" color="inherit" />
+                        </div>
+                        <Link className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="settings"
+                              title="设置"
+                              to={Path.Settings}>
+                            <Icon as={RiSettingsFill} width="15px" height="15px" color="inherit" />
+                        </Link>
+                        <Link className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="profile"
+                              title="个人中心" to={Path.SignUp}>
+                            <Icon as={RiUser6Fill} width="15px" height="15px" color="inherit" />
+                        </Link>
 
-                <Link className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="points"
-                      to={Path.BuyPoints} title="积分充值">
-                    <img width={25} src={theme === "dark" ? "./points-light.svg" : "./points-dark.svg"} alt=""/>
-                </Link>
-                <div className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="theme"
-                     onClick={nextTheme} title="主题">
-                    <img width={25} src={theme === "dark" ? "./theme-dark.svg" : "./theme-light.svg"} alt=""/>
+                    </div>
+
                 </div>
-                <Link className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="settings" title="设置"
-                      to={Path.Settings}>
-                    <img width={25} src={theme === "dark" ? "./settings-dark.svg" : "./settings-light.svg"} alt=""/>
-                </Link>
-                <Link className={`${styles["left-sidebar-bottom-item"]} ${styles["popup"]}`} key="profile"
-                      title="个人中心" to={Path.SignUp}>
-                    <img width={25} src={theme === "dark" ? "./profile-dark.svg" : "./profile-light.svg"} alt=""/>
-                </Link>
+
 
             </div>
-        </div>
+        </ChakraProvider>
     )
 }
