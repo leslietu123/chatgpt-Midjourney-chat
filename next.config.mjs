@@ -82,10 +82,6 @@ if (mode !== "export") {
         destination: "https://sharegpt.com/api/conversations",
       },
       {
-        source: "/api/shop-api/:path*",
-        destination: `${API_URL}/:path*`,
-      },
-      {
         source: "/api/back/mj/:path*",
         destination: "http://localhost:3005/:path*",
       }
