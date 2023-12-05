@@ -25,7 +25,8 @@ import {IconButton} from "@/app/components/button";
 import PopUp from "@/app/components/pop";
 import {getLocalUserInfo, isLogin} from "@/app/api/backapi/user";
 import {ChakraProvider} from "@chakra-ui/react";
-
+import chakraTheme from "@/app/thems";
+import {CacheProvider} from '@chakra-ui/next-js'
 
 mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, {debug: true});
 
@@ -263,11 +264,13 @@ export function Home() {
 
     return (
         <ErrorBoundary>
-
-                <Router>
-                    <Screen/>
-                </Router>
-
+            <CacheProvider>
+                <ChakraProvider theme={chakraTheme}>
+                    <Router>
+                        <Screen/>
+                    </Router>
+                </ChakraProvider>
+            </CacheProvider>
         </ErrorBoundary>
     );
 }

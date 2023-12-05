@@ -87,7 +87,6 @@ export function MobileSidebar() {
 
 
     return (
-        <ChakraProvider theme={chakraTheme}>
             <div className={styles["mobile-sidebar"]}>
 
                 {/*<Link to={Path.Home} >*/}
@@ -107,6 +106,5 @@ export function MobileSidebar() {
                 </div>
 
             </div>
-        </ChakraProvider>
     )
 }

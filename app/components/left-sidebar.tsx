@@ -25,7 +25,6 @@ export function LeftSidebar() {
 
 
     return (
-        <ChakraProvider theme={chakraTheme}>
             <div className={styles["left-sidebar-container"]}>
                 <div className={styles["left-sidebar"]}>
 
@@ -67,13 +66,9 @@ export function LeftSidebar() {
                               title="个人中心" to={Path.SignUp}>
                             <Icon as={RiUser6Fill} width="15px" height="15px" color="inherit"/>
                         </Link>
-
                     </div>
-
                 </div>
-
-
             </div>
-        </ChakraProvider>
+
     )
 }
