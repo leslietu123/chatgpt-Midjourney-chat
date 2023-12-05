@@ -19,13 +19,14 @@ import {PointsListProps, tarns,} from "../api/backapi/types";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {getMe, getMyLogs} from "@/app/api/back/user";
 import {Log, User} from "../api/back/types";
+import {Flex, Spacer, Text} from "@chakra-ui/react";
 
 
 async function fetchTransaction(email: string, index: number) {
     return await getPointsTransaction(email, index);
 }
 
-export const initUser={
+export const initUser = {
     _id: "",
     name: "",
     phone: "",
@@ -71,7 +72,7 @@ function PointsList(props: PointsListProps) {
                 setList(res.data)
                 setPageIndex(pageIndex + 1)
             })
-        }catch (e) {
+        } catch (e) {
             console.log(e)
         }
     }, []);
@@ -193,7 +194,7 @@ export function UserProfile() {
                    buttonText="我知道了" content={<ShareInfo/>} onClose={() => setShowShareInfo(false)}/>
             <PopUp hideButton={true} title="积分明细" open={showPointsTransaction}
                    onClick={() => setShowPointsTransaction(false)}
-                   buttonText="我知道了" content={<PointsList />}
+                   buttonText="我知道了" content={<PointsList/>}
                    onClose={() => setShowPointsTransaction(false)}
             />
             <div className="window-header">
@@ -248,8 +249,23 @@ export function UserProfile() {
 
                                 </div>
                                 <div className={styles["profile-points-item"]}>
-                                    <span>{userInfo.memberInfo.points ? "剩余AI币" : "..."}</span>
-                                    <p>{userInfo.memberInfo.points ? userInfo.memberInfo.points : "..."}</p>
+                                    <Flex justifyContent={"space-between"} width="100%" alignItems={"center"} marginY={3}>
+                                        <span>最近购买</span>
+                                        <Text fontSize={13}>{userInfo.member.name ? userInfo.member.name : "..."}</Text>
+                                    </Flex>
+                                </div>
+                                <div className={styles["profile-points-item"]}>
+                                    <Flex justifyContent={"space-between"} width="100%" alignItems={"center"} marginY={3}>
+                                        <span>到期时间</span>
+                                        <Text fontSize={13}>{userInfo.memberInfo.end_at ? new Date(userInfo.memberInfo.end_at).toLocaleString(): "..."}</Text>
+                                    </Flex>
+                                </div>
+                                <div className={styles["profile-points-item"]}>
+                                    <Flex justifyContent={"space-between"} width="100%" alignItems={"center"} marginY={3}>
+                                        <span>剩余积分</span>
+                                        <Text fontSize={13}>{userInfo.memberInfo.points ? userInfo.memberInfo.points : "..."}</Text>
+                                    </Flex>
+
                                 </div>
                             </div>
                             <div className={styles["profile-points"]}>
