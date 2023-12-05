@@ -50,7 +50,7 @@ export function Shop() {
             try {
                 const res: Member[] = await getMembers();
                 setLoading(false);
-                if (res) {
+                if (res.length > 0) {
                     setMembers(res);
                     setSelectedMember(res[0])
                 } else {
