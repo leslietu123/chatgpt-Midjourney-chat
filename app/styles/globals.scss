@@ -21,7 +21,7 @@
   --hover-color: #f3f3f3;
   --bar-color: rgba(0, 0, 0, 0.1);
   --pic-border:2px dashed rgb(140, 140, 140);
-  --draw-img-border:2px dashed rgb(0, 0, 0);
+  --draw-img-border:2px solid rgb(0, 0, 0);
   --theme-color: var(--gray);
   --moz-box-shadow: 8px 8px 20px 0 rgba(55, 99, 170, .1);
   --bottom-bar-bg: rgba(228, 235, 229, 0.68);
@@ -39,10 +39,10 @@
 
 @mixin dark {
   --theme: dark;
-  --card-bg: rgba(24, 13, 0, 0.9);
-  --sidebar-item-bg: rgba(81, 44, 0, 0.51);
+  --card-bg: rgba(0, 17, 38, 0.81);
+  --sidebar-item-bg: rgba(88, 81, 162, 0.51);
   /* color */
-  --white: rgb(33, 18, 0);
+  --white: rgb(12, 7, 19);
   --bg: var(--white);
   --black: rgb(255, 255, 255);
   --gray: rgb(21, 21, 21);
@@ -52,12 +52,12 @@
   --prompt-content: #1c1c1c;
   --btn-background: linear-gradient(90deg, #2507CC 0%, #8E26D4 100%), #7851EC;
   --hover-color: #323232;
-  --bg-transparent: rgba(38, 16, 0, 0.81);
+  --bg-transparent: rgba(0, 17, 38, 0.81);
   --bar-color: rgba(255, 255, 255, 0.1);
   --pic-border:2px dashed rgb(140, 140, 140);
   --prompt-border:1px solid rgb(72, 72, 72);
-  --draw-img-border:1px dashed rgb(255, 255, 255);
-  --bottom-bar-bg: rgba(31, 31, 31, 0.49);
+  --draw-img-border:2px solid rgb(255, 255, 255);
+  --bottom-bar-bg: rgba(0, 17, 38, 0.81);
   --left-sidebar-background:#323232 ;
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
   --linear-background: linear-gradient(to right, #364149,#303841, #303841);

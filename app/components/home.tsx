@@ -153,6 +153,7 @@ function Screen() {
     const isDraw = location.pathname === Path.Draw;
     const isAuth = location.pathname === Path.Auth;
     const isShop = location.pathname === Path.BuyPoints;
+    const isGround = location.pathname === Path.Ground;
     const isSign = location.pathname === Path.SignIn || location.pathname === Path.SignUp
     const isMobileScreen = useMobileScreen();
     const isShowKefu = location.pathname === Path.Home
@@ -215,7 +216,7 @@ function Screen() {
                 <>
                     {/*<SideBar className={isHome ? styles["sidebar-show"] : ""} />*/}
                     {!isMobileScreen && <LeftSidebar/>}
-                    {isMobileScreen && !isChat && !isDraw && !isSign && !isShop && <MobileSidebar/>}
+                    {isMobileScreen && !isChat && !isDraw && !isSign && !isShop && !isGround&& <MobileSidebar/>}
                     <div className={styles["window-content"]} id={SlotID.AppBody}>
                         <Routes>
                             <Route path={Path.Home} element={<NewChat/>}/>

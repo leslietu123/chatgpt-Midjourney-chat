@@ -93,7 +93,7 @@ export function Draw() {
     const [drawResList, setDrawResList] = useState<drawRes[]>([] as drawRes[])
     const strPrompt = `${prompt.content}${prompt.selectedPrompt.length > 0 ? `,${prompt.selectedPrompt.map(item => item.prompt).join(",")}` : ''}${prompt.model?.value}${prompt.size?.value}${prompt.chaos !== 0 ? ` --chaos ${prompt.chaos}` : ""}${parentImages.length > 0 ? prompt.iw : ""}${prompt.styled !== 0 ? ` --s ${prompt.styled}` : ""}${prompt.stop !== 100 ? ` --stop ${prompt.stop}` : ""}${prompt.weird !== 0 ? ` --weird ${prompt.weird}` : ""}${prompt.tile ? ' --tile' : ""}${prompt.seed !== 0 ? ` --seed ${prompt.seed}` : ""}${prompt.quality?.value}${prompt.version?.value}`
     const [page, setPage] = useState(1)
-console.log(strPrompt)
+    console.log(strPrompt)
 
     useEffect(() => {
             if (userToken && userToken !== "") {
@@ -173,6 +173,15 @@ console.log(strPrompt)
         }
     }, []);
 
+
+    const checkForForbiddenWords = (input: string, forbiddenWords: any[]) => {
+        const lowerCaseInput = input.toLowerCase();
+        return forbiddenWords.some(word => {
+            const lowerCaseWord = word.toLowerCase();
+            return lowerCaseInput.includes(lowerCaseWord);
+        });
+    };
+
     const handleSubmit = async (data: any) => {
         if (!islogin) {
             showToast("请先登录")
@@ -183,7 +192,7 @@ console.log(strPrompt)
             showToast("请输入描述")
             return
         }
-        if(parentImages.length === 0 && active === 1){
+        if (parentImages.length === 0 && active === 1) {
             showToast("请上传图片")
             return
         }

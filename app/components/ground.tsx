@@ -11,8 +11,9 @@ import {useNavigate} from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {getGround} from "@/app/api/back/mj";
 import {drawRes} from "@/app/api/back/types";
-import {Grid} from "@chakra-ui/react";
+import {Center, Grid} from "@chakra-ui/react";
 import Masonry from 'react-layout-masonry';
+import {AddIcon} from "@chakra-ui/icons";
 
 
 export function Ground() {
@@ -22,70 +23,44 @@ export function Ground() {
     const [open, setOpen] = useState<boolean>(false);
     const [selectDraw, setSelectDraw] = useState<drawRes>({} as drawRes);
     const [hasMore, setHasMore] = useState(true)
-    // let limit = 20;
+    let limit = 20;
     const [page, setPage] = useState(1);
-console.log(page)
+    console.log(page)
 
 
-    useEffect(() => {
-        const run = async () => {
-            getGround(page).then((res) => {
-                setDraws(res);
-                setPage(page + 1);
-                // if (res && res.data.length === limit) {
-                //     setHasMore(true);
-                //     setDraws(res.data);
-                //     return;
-                // }
-                // if (res && res.data.length == 0){
-                //     setHasMore(false)
-                //     return;
-                // }
-                // if(res && res.data.length< limit){
-                //     setHasMore(false)
-                //     setDraws(res.data);
-                //     return;
-                // }
-            })
+    const fetchData = async (page: number, append: boolean = false) => {
+        try {
+            const res = await getGround(page);
+            if (res && res.length === limit) {
+                setHasMore(true);
+                if (append) {
+                    setDraws((prevDraws) => [...prevDraws, ...res]);
+                } else {
+                    setDraws(res);
+                }
+                setPage(prevPage => prevPage + 1);
+            } else if (res && res.length === 0) {
+                setHasMore(false);
+            } else if (res && res.length < limit) {
+                if (append) {
+                    setDraws((prevDraws) => [...prevDraws, ...res]);
+                } else {
+                    setDraws(res);
+                }
+                setHasMore(false);
+            }
+        } catch (error) {
+            console.error('Failed to get data:', error);
         }
-        run();
-    }, []);
-
-    // const loadMore = async () => {
-    //     fetchdraws("", draws.length, limit).then((res) => {
-    //         if (res && res.data.length === limit) {
-    //             setHasMore(true);
-    //             setDraws((prevDraws) => [...prevDraws, ...res.data]);
-    //             return;
-    //         }
-    //         if (res && res.data.length == 0) {
-    //             setHasMore(false)
-    //             return;
-    //         }
-    //         if (res && res.data.length < limit) {
-    //             setHasMore(false)
-    //             setDraws((prevDraws) => [...prevDraws, ...res.data]);
-    //             return;
-    //         }
-    //     })
-    // }
-
-    const fetchMoreItems = async (page:number) => {
-        getGround(page).then((res) => {
-            setDraws((prevDraws) => [...prevDraws, ...res]);
-            setPage(page + 1);
-        });
     };
 
-    const settingColumns = useCallback(() => {
-        if(window.innerWidth >= 1400) return 4
-        if(window.innerWidth >= 800) return 3
-        if(window.innerWidth >= 500) return 2
-        return 1
-    }, [])
+    useEffect(() => {
+        fetchData(page);
+    }, []);
 
-    const [column, setColumn] = useState(() => settingColumns())
-
+    const fetchMoreItems = async (page: number) => {
+        await fetchData(page, true);
+    };
 
 
     return (
@@ -113,27 +88,46 @@ console.log(page)
             </div>
             <Cover open={open} onClose={() => setOpen(false)} onDrawImg={selectDraw}/>
 
-            <Masonry columns={{ 640: 2, 768: 3, 1024: 4,1280:5, 1600: 6 }} gap={3} style={{
-                margin: "0 auto",
-                overflowY: "auto",
-                overflowX: "hidden",
-                width: "100%",
-                height: "100%",
-                padding: "20px 10px"
-            }}>
-                {draws.map((item,index) => {
-                    return (
-                        <div key={item._id} className={styles['mItem']} onClick={() => {
-                            setSelectDraw(item);
-                            setOpen(true);
-                        }}>
-                            <Image key={index} layout="fill" src={item.uri} alt={item._id}
-                                   className={styles["ground__draw-img"]}
-                            />
-                        </div>
-                    );
-                })}
-            </Masonry>
+                <Masonry columns={{640: 2, 768: 3, 1024: 4, 1280: 5, 1600: 6}} gap={3} style={{
+                    margin: "0 auto",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    width: "100%",
+                    height: "100%",
+                    padding: "20px 10px"
+                }}>
+                    {draws.map((item, index) => {
+                        return (
+                            <div key={item._id} className={styles['mItem']} onClick={() => {
+                                setSelectDraw(item);
+                                setOpen(true);
+                            }}>
+                                <Image key={index} layout="fill" src={item.uri} alt={item._id}
+                                       className={styles["ground__draw-img"]}
+                                />
+                            </div>
+                        );
+                    })}
+
+                </Masonry>
+
+
+            <Center
+                paddingY={5}
+                bg="linear-gradient(to bottom, rgba(0,0,0,0),rgba(0,0,0,1))"
+                position={"absolute"}
+                bottom={0}
+                width="100%"
+            >
+                <IconButton
+                    icon={<AddIcon/>}
+                    onClick={() => fetchMoreItems(page)}
+                    bordered
+                    text={hasMore ? "加载更多" : "没有更多了"}
+                    className={styles["ground__load-more"]}
+                    disabled={!hasMore}
+                />
+            </Center>
         </>
     )
 }

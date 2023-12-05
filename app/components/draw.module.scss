@@ -114,7 +114,7 @@
 
 .draw-img-body {
   position: relative;
-  border: var(--border-in-light);
+  //border: var(--draw-img-border);
   border-radius: 10px;
   padding: 5px;
   display: flex;
@@ -131,7 +131,7 @@
 .draw-list-item-active {
   border: var(--draw-img-border);
   border-radius: 10px;
-  padding: 5px;
+  padding: 20px;
 }
 
 .draw-img-info-item-date {
@@ -570,6 +570,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20px;
   //justify-content: center;
   margin-left: 30px;
   overflow: auto;
@@ -583,9 +584,8 @@
   }
 
   .draw-list-item {
-    margin-top: 10px;
-    padding: 15px;
     box-sizing: border-box;
+    margin-bottom: 30px;
 
     .draw-list-img {
       img {
