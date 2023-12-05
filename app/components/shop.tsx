@@ -186,7 +186,7 @@ export function Shop() {
                 <div className={styles["shop-body"]}>
                     {loading ? (<Loading/>) : (
                         <div className={styles["shop-card"]}>
-                            {members.length > 0 && members.sort((a, b) => a.price - b.price).map((item: Member, index: number) => (
+                            {members && members.length > 0 && members.sort((a, b) => a.price - b.price).map((item: Member, index: number) => (
                                 <div key={index}
                                      className={`${styles["shop-card-item"]} ${selectedMember._id == item._id ? styles["shop-card-item-selected"] : ""}`}
                                      onClick={() => setSelectedMember(item)}>
@@ -251,7 +251,7 @@ export function Shop() {
                 <div className={`${styles["shop-body"]} ${styles["shop-body-mobile"]}`}>
                     {loading ? (<Loading/>) : (
                         <div className={styles["shop-card"]}>
-                            {pryment.length > 0 && pryment.map((item: PaymentMethod, index: number) => (
+                            {pryment && pryment.length > 0 && pryment.map((item: PaymentMethod, index: number) => (
                                 <div key={index}
                                      className={`${styles["shop-card-item"]} ${selectedPaymentMethod._id == item._id ? styles["shop-card-item-selected"] : ""}`}
                                      onClick={() => setSelectedPaymentMethod(item)}>
@@ -279,12 +279,8 @@ export function Shop() {
                                 {onPay ? ("支付中...") : ("去支付")}
                             </button>
                         </div>
-
                     </div>
-
                 </div>
-
-
             </div>
         </ErrorBoundary>
     )
