@@ -199,7 +199,7 @@ export function Draw() {
             if (res.code === 0) {
                 showToast("提交成功")
                 setSubmitting(false);
-                const socket = io(`${process.env.NEXT_PUBLIC_BACK_URL}`);
+                const socket = io(`${process.env.NEXT_PUBLIC_BACK_WS}`);
                 socket.on(res.taskId, (data: drawRes) => {
                     setOnDrawImg(data);
                     if (data.progress === 'done') {
