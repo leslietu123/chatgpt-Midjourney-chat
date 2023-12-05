@@ -101,7 +101,7 @@ export function SignUp() {
                     if (tokenRes.jwtToken !== ""){
                         localStorage.setItem("user_token", tokenRes.jwtToken);
                         setLoading(false)
-                        // navigate(Path.UserProfile);
+                        navigate(Path.UserProfile);
                     }else {
                         showToast("注册失败")
                         setLoading(false)
