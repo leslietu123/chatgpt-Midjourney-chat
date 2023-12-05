@@ -41,10 +41,8 @@ export function Shop() {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(pryment[0] || {} as PaymentMethod);
 
 
+
     useEffect(() => {
-        if (isMobileBroswer && isMobileScreen) {
-            setSelectedPaymentMethod(pryment[1])
-        }
         const fetchPoints = async () => {
             setLoading(true);
             try {
@@ -62,7 +60,7 @@ export function Shop() {
             }
         }
 
-        const fetchPaymenys = async () => {
+        const fetchPayments = async () => {
             setLoading(true);
             try {
                 const res: PaymentMethod[] = await getPayments();
@@ -70,6 +68,10 @@ export function Shop() {
                 if (res) {
                     setPayment(res);
                     setSelectedPaymentMethod(res[0])
+                    if (isMobileBroswer && isMobileScreen) {
+                        setSelectedPaymentMethod(res[1] || res[0])
+                    }
+                    fetchPoints();
                 } else {
                     // handle the situation when res is undefined
                     console.log("Failed to get points");
@@ -78,8 +80,7 @@ export function Shop() {
                 console.error(error);
             }
         }
-        fetchPaymenys();
-        fetchPoints();
+        fetchPayments();
     }, []);
 
     const handleCreateOrder = async () => {
