@@ -130,8 +130,8 @@
 
 .draw-list-item-active {
   border: var(--draw-img-border);
-  border-radius: 10px;
-  padding: 20px;
+  border-radius: 5px;
+  padding: 3px;
 }
 
 .draw-img-info-item-date {
@@ -590,7 +590,7 @@
     .draw-list-img {
       img {
         width: 100%;
-        border-radius: 10px;
+        border-radius: 3px;
 
         &:hover {
           transform: scale(0.9);
