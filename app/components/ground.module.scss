@@ -99,6 +99,26 @@
 
 .mItem{
   display: flex;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.mItem-cover{
+  position: absolute;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content:end;
+  align-items: center;
+  opacity: 0; /* 初始化为透明 */
+  transition: opacity 0.5s; /* 添加过渡效果 */
+  background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); /* 从底部到顶部的渐变色 */
+}
+
+.mItem:hover .mItem-cover{
+  opacity: 1; /* 鼠标移入时设置为不透明 */
 }
 
 @media screen and (max-width: 768px) {

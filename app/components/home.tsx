@@ -24,7 +24,7 @@ import ChatIcon from "@/app/icons/chat.svg";
 import {IconButton} from "@/app/components/button";
 import PopUp from "@/app/components/pop";
 import {getLocalUserInfo, isLogin} from "@/app/api/backapi/user";
-import {ChakraProvider} from "@chakra-ui/react";
+import {ChakraProvider, theme} from "@chakra-ui/react";
 import chakraTheme from "@/app/thems";
 import {CacheProvider} from '@chakra-ui/next-js'
 
@@ -145,7 +145,8 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
-    const [showKefu, setShowKefu] = useState(false);
+    const theme = useAppConfig().theme;
+    console.log(theme);
     const isSignIn = isLogin();
     const config = useAppConfig();
     const location = useLocation();
@@ -183,7 +184,7 @@ function Screen() {
                     config.tightBorder && !isMobileScreen
                         ? styles["tight-container"]
                         : styles.container
-                } ${getLang() === "ar" ? styles["rtl-screen"] : ""}`
+                } ${getLang() === "ar" ? styles["rtl-screen"] : ""} ${theme === "dark" ? styles["dark"] : ""}`
             }
         >
             {/*{isShowKefu && (*/}
@@ -216,7 +217,7 @@ function Screen() {
                 <>
                     {/*<SideBar className={isHome ? styles["sidebar-show"] : ""} />*/}
                     {!isMobileScreen && <LeftSidebar/>}
-                    {isMobileScreen && !isChat && !isDraw && !isSign && !isShop && !isGround&& <MobileSidebar/>}
+                    {isMobileScreen && !isChat && !isDraw && !isSign && !isShop && !isGround && <MobileSidebar/>}
                     <div className={styles["window-content"]} id={SlotID.AppBody}>
                         <Routes>
                             <Route path={Path.Home} element={<NewChat/>}/>

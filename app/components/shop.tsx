@@ -14,7 +14,8 @@ import PopUp from "./pop";
 import {useAppConfig} from "@/app/store";
 import {CreateOrder, Member, paymentMethod, PaymentMethod} from "@/app/api/back/types";
 import {checkOrderStatus, createNewOrder, getMembers, getPayments, Pay} from "@/app/api/back/shop";
-import {RiVipCrownFill, RiWechatPayFill} from "react-icons/ri";
+import {RiWechatPayFill} from "react-icons/ri";
+import { GiTwoCoins } from "react-icons/gi";
 import {AiOutlineAlipay} from "react-icons/ai";
 
 import {Icon} from "@chakra-ui/react";
@@ -193,7 +194,7 @@ export function Shop() {
                                      onClick={() => setSelectedMember(item)}>
                                     <div className={styles["shop-card-item-title"]}>
                                         {!item.unlimited ? item.name :
-                                            <Icon as={RiVipCrownFill} className="no-dark" width="15px" height="15px" color="inherit" style={{color:"#ffffff !important"}}/>}
+                                            <Icon as={GiTwoCoins} className="no-dark" width="20px" height="20px" color="#ffb300a1" />}
                                         {!item.point.unlimited && (
                                             <div className={styles["shop-card-item-title-count"]}>
                                                 {item.point?.points + "积分"}
@@ -259,8 +260,8 @@ export function Shop() {
                                     <div
                                         className={`${styles["shop-card-item-title"]} ${styles["shop-card-item-title-payment"]}`}>
                                         {item.method === paymentMethod.wechat ?
-                                            (<Icon as={RiWechatPayFill} width="25px" height="25px" color="inherit"/>)
-                                            : (<Icon as={AiOutlineAlipay} width="25px" height="25px" color="inherit"/>)}
+                                            (<Icon as={RiWechatPayFill} width="25px" height="25px" color="#129300"/>)
+                                            : (<Icon as={AiOutlineAlipay} width="25px" height="25px" color="#009fff"/>)}
                                         {item.method === paymentMethod.wechat ? "微信支付" : "支付宝支付"}
                                     </div>
                                 </div>

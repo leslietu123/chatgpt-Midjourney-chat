@@ -16,6 +16,7 @@ import {useMobileScreen} from "@/app/utils";
 import {Masks} from "../masks/masks"
 import {homelist} from "../static"
 import {Link} from "react-router-dom";
+import Image from "next/image";
 
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
@@ -138,7 +139,7 @@ export function NewChat() {
             <div className={styles["new-chat-left"]}>
 
                 <div className={styles["new-chat-left-header"]}>
-                    <img src={theme === "dark" ? "./site-logo.png":"./site-logo-light.png"} alt=""/>
+                    <Image width={150} height={150} src={theme === "dark" ? "/site-logo.png":"/site-logo-light.png"} alt=""/>
                     <h1 className={styles["new-chat-left-title"]}>{process.env.NEXT_PUBLIC_SITE_SLOGEN}</h1>
                     <h2 className={styles["new-chat-left-sub-title"]}>{process.env.NEXT_PUBLIC_SITE_SUB_SLOGEN}</h2>
                     <div className={styles["new-chat-left-header-content"]}>

@@ -11,13 +11,18 @@ import {useNavigate} from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {getGround} from "@/app/api/back/mj";
 import {drawRes} from "@/app/api/back/types";
-import {Center, Grid} from "@chakra-ui/react";
+import {Box, Center, Container, Flex, Grid, Icon} from "@chakra-ui/react";
 import Masonry from 'react-layout-masonry';
 import {AddIcon} from "@chakra-ui/icons";
-
+import {AiOutlineLike} from "react-icons/ai";
+import {useMobileScreen} from "@/app/utils";
+import {useAppConfig} from "@/app/store";
+import {showToast} from "@/app/components/ui-lib";
+import fileDownload from "js-file-download";
 
 export function Ground() {
-
+    const isMobileScreen = useMobileScreen();
+    const theme = useAppConfig().theme;
     const navigate = useNavigate()
     const [draws, setDraws] = useState<drawRes[]>([]);
     const [open, setOpen] = useState<boolean>(false);
@@ -25,8 +30,7 @@ export function Ground() {
     const [hasMore, setHasMore] = useState(true)
     let limit = 20;
     const [page, setPage] = useState(1);
-    console.log(page)
-
+    const [downloading, setDownloading] = useState(false);
 
     const fetchData = async (page: number, append: boolean = false) => {
         try {
@@ -62,6 +66,26 @@ export function Ground() {
         await fetchData(page, true);
     };
 
+    const copyPromptClipboard = async (data:drawRes) => {
+        try {
+            await navigator.clipboard.writeText(data?.prompt || "");
+            showToast("已复制到剪切板");
+        } catch (err) {
+            showToast("复制失败");
+            console.error('复制失败: ', err);
+        }
+    };
+
+    async function handleDownload(data:drawRes) {
+        const url = data?.uri || "";
+        setDownloading(true);
+        showToast("下载中...")
+        const response = await fetch(url);
+        const blob = await response.blob();
+        fileDownload(blob, 'image.png'); // or any other name you want
+        setDownloading(false);
+    }
+
 
     return (
         <>
@@ -87,14 +111,15 @@ export function Ground() {
                 </div>
             </div>
             <Cover open={open} onClose={() => setOpen(false)} onDrawImg={selectDraw}/>
-
+            <Box overflowY={"auto"} overflowX={"hidden"} >
                 <Masonry columns={{640: 2, 768: 3, 1024: 4, 1280: 5, 1600: 6}} gap={3} style={{
                     margin: "0 auto",
-                    overflowY: "auto",
-                    overflowX: "hidden",
+                    // overflowY: "auto",
+                    // overflowX: "hidden",
                     width: "100%",
+                    maxWidth: "1600px",
                     height: "100%",
-                    padding: "20px 10px"
+                    padding: "20px 10px",
                 }}>
                     {draws.map((item, index) => {
                         return (
@@ -105,16 +130,68 @@ export function Ground() {
                                 <Image key={index} layout="fill" src={item.uri} alt={item._id}
                                        className={styles["ground__draw-img"]}
                                 />
+                                <Flex padding={3} className={styles['mItem-cover']}>
+                                    <Flex padding={3} width="100%" justifyContent={"space-between"}>
+                                        <Box fontWeight={900} color={'#fff'}
+                                             fontSize={14}>{item.user && item.user.name ? item.user.name.substring(0, 3) + "***" + item.user.name.substring(9) : "匿名用户"}</Box>
+                                        {/*<Icon as={AiOutlineLike} className="no-dark" width="20px" height="20px"*/}
+                                        {/*      color="#ffffff"/>*/}
+                                    </Flex>
+                                    <Box width={"100%"} color={'#fff'} paddingX={3} fontWeight={500} fontSize={12}>
+                                        {item.prompt ? item.prompt.slice(0, 40) : "暂无提示词"}
+                                    </Box>
+                                    <Flex gap={4} padding={3} width="100%" justifyContent={"space-between"}>
+                                        <Center
+                                            color={'#fff'}
+                                            borderRadius={5}
+                                            fontWeight={900}
+                                            width={"100%"}
+                                            background={'var(--ground-btn-bg)'}
+                                            backdropFilter={'blur(10px)'}
+                                            padding={2}
+                                            fontSize={12}
+                                            _hover={{
+                                                background: 'var(--ground-btn-bg)',
+                                                backdropFilter: 'blur(3px)',
+                                            }}
+                                            onClick={async (e) => {
+                                                e.stopPropagation();
+                                                await copyPromptClipboard(item);
+                                            }}
+                                        >
+                                            复制
+                                        </Center>
+                                        <Center
+                                            color={'#fff'}
+                                            borderRadius={5}
+                                            fontWeight={900}
+                                            width={"100%"}
+                                            background={'var(--ground-btn-bg)'}
+                                            backdropFilter={'blur(10px)'}
+                                            padding={2}
+                                            fontSize={12}
+                                            _hover={{
+                                                background: 'var(--ground-btn-bg)',
+                                                backdropFilter: 'blur(3px)',
+                                            }}
+                                            onClick={async (e) => {
+                                                e.stopPropagation();
+                                                await handleDownload(item);
+                                            }}
+                                        >
+                                            下载
+                                        </Center>
+                                    </Flex>
+                                </Flex>
                             </div>
                         );
                     })}
-
                 </Masonry>
-
+            </Box>
 
             <Center
                 paddingY={5}
-                bg="linear-gradient(to bottom, rgba(0,0,0,0),rgba(0,0,0,1))"
+                bg="var(--bottom-bar)"
                 position={"absolute"}
                 bottom={0}
                 width="100%"

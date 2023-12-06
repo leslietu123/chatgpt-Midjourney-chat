@@ -7,6 +7,7 @@
   /* color */
   --white: white;
   --card-bg: #f5f5f5;
+  --bottom-bar:linear-gradient(to bottom, rgba(0,0,0,0), rgb(255, 255, 255));
   --sidebar-item-bg: rgba(255, 211, 158, 0.51);
   --bg: rgb(255, 255, 255);
   --black: rgb(17, 49, 40);
@@ -17,6 +18,7 @@
   --ground-bg: linear-gradient(90deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
   --second: #f5f7fb;
   --prompt-content: #efefef;
+  --ground-btn-bg: rgba(73, 70, 70, 0.48);
   --prompt-border:1px solid rgb(206, 206, 206);
   --hover-color: #f3f3f3;
   --bar-color: rgba(0, 0, 0, 0.1);
@@ -40,6 +42,7 @@
 @mixin dark {
   --theme: dark;
   --card-bg: rgba(0, 17, 38, 0.81);
+  --bottom-bar:linear-gradient(to bottom, rgba(0,0,0,0),rgba(0,0,0,1));
   --sidebar-item-bg: rgba(88, 81, 162, 0.51);
   /* color */
   --white: rgb(12, 7, 19);
@@ -54,6 +57,7 @@
   --hover-color: #323232;
   --bg-transparent: rgba(0, 17, 38, 0.81);
   --bar-color: rgba(255, 255, 255, 0.1);
+  --ground-btn-bg: rgba(73, 70, 70, 0.48);
   --pic-border:2px dashed rgb(140, 140, 140);
   --prompt-border:1px solid rgb(72, 72, 72);
   --draw-img-border:2px solid rgb(255, 255, 255);

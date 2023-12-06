@@ -10,6 +10,10 @@
   min-width: 600px;
   min-height: 480px;
   max-width: 1200px;
+  background-image: url(/body-bg.png);
+  background-position-y: -7%;
+  background-repeat: repeat-y;
+  background-size: 100%;
 
   display: flex;
   overflow: hidden;
@@ -17,6 +21,14 @@
 
   width: var(--window-width);
   height: var(--window-height);
+}
+
+.dark{
+  background-image: url("/bg1.svg") !important;
+  background-position-y: 50% !important;
+  background-position-x: 3% !important;
+  background-repeat: no-repeat !important;
+  background-size: 35% !important;
 }
 
 .container {
