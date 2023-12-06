@@ -130,7 +130,7 @@ export function Ground() {
                                 <Image key={index} layout="fill" src={item.uri} alt={item._id}
                                        className={styles["ground__draw-img"]}
                                 />
-                                <Flex padding={3} className={styles['mItem-cover']}>
+                                <Flex padding={1} className={styles['mItem-cover']}>
                                     <Flex padding={3} width="100%" justifyContent={"space-between"}>
                                         <Box fontWeight={900} color={'#fff'}
                                              fontSize={14}>{item.user && item.user.name ? item.user.name.substring(0, 3) + "***" + item.user.name.substring(9) : "匿名用户"}</Box>
