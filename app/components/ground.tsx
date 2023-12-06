@@ -112,7 +112,7 @@ export function Ground() {
             </div>
             <Cover open={open} onClose={() => setOpen(false)} onDrawImg={selectDraw}/>
             <Box overflowY={"auto"} overflowX={"hidden"} >
-                <Masonry columns={{640: 2, 768: 3, 1024: 4, 1280: 5, 1600: 6}} gap={3} style={{
+                <Masonry columns={{640: 2, 768: 3, 1024: 4, 1280: 5, 1600: 6}} gap={10} style={{
                     margin: "0 auto",
                     // overflowY: "auto",
                     // overflowX: "hidden",
