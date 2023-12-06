@@ -661,7 +661,7 @@ function _Chat() {
     const config = useAppConfig();
     const fontSize = config.fontSize;
     const currentModel = chatStore.currentSession().mask.modelConfig.model;
-    const notGpt4 = currentModel !== "gpt-4" && currentModel !== "gpt-4-0613" && currentModel !== "gpt-4-32k-0314" && currentModel !== "gpt-4-0314" && currentModel !== "gpt-4-32k" && currentModel !== "gpt-4-32k-0613";
+    const notGpt4 = currentModel !== "gpt-4" && currentModel !== "gpt-4-0613" && currentModel !== "gpt-4-32k-0314" && currentModel !== "gpt-4-0314" && currentModel !== "gpt-4-32k" && currentModel !== "gpt-4-32k-0613" && currentModel !== "gpt-4-1106-preview" && currentModel !== "gpt-4-vision-preview";
     const [showExport, setShowExport] = useState(false);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const [userInput, setUserInput] = useState("");
@@ -1320,39 +1320,39 @@ function _Chat() {
                                                 defaultShow={i >= messages.length - 6}
                                             />
                                         </div>
-                                        {!isUser &&
-                                            message.model == "midjourney" &&
-                                            message.attr?.finished &&
-                                            message.attr?.taskId &&
-                                            message.attr?.options?.length && (
-                                                <div
-                                                    className={[
-                                                        styles["chat-message-actions"],
-                                                        styles["column-flex"],
-                                                    ].join(" ")}
-                                                >
-                                                    <div
-                                                        style={{marginTop: "6px"}}
-                                                        className={styles["chat-input-actions"]}
-                                                    >
-                                                        {message.attr?.options.map((item: any) => (
-                                                            <ChatAction
-                                                                style={{marginBottom: "6px"}}
-                                                                key={i}
-                                                                text={item.label}
-                                                                onClick={() =>
-                                                                    doSubmit(
-                                                                        `/mj CUSTOM::${message.attr.taskId}::${item.custom}`,
-                                                                        {
-                                                                            botMsg: message.attr,
-                                                                        }
-                                                                    )
-                                                                }
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
+                                        {/*{!isUser &&*/}
+                                        {/*    message.model == "midjourney" &&*/}
+                                        {/*    message.attr?.finished &&*/}
+                                        {/*    message.attr?.taskId &&*/}
+                                        {/*    message.attr?.options?.length && (*/}
+                                        {/*        <div*/}
+                                        {/*            className={[*/}
+                                        {/*                styles["chat-message-actions"],*/}
+                                        {/*                styles["column-flex"],*/}
+                                        {/*            ].join(" ")}*/}
+                                        {/*        >*/}
+                                        {/*            <div*/}
+                                        {/*                style={{marginTop: "6px"}}*/}
+                                        {/*                className={styles["chat-input-actions"]}*/}
+                                        {/*            >*/}
+                                        {/*                {message.attr?.options.map((item: any) => (*/}
+                                        {/*                    <ChatAction*/}
+                                        {/*                        style={{marginBottom: "6px"}}*/}
+                                        {/*                        key={i}*/}
+                                        {/*                        text={item.label}*/}
+                                        {/*                        onClick={() =>*/}
+                                        {/*                            doSubmit(*/}
+                                        {/*                                `/mj CUSTOM::${message.attr.taskId}::${item.custom}`,*/}
+                                        {/*                                {*/}
+                                        {/*                                    botMsg: message.attr,*/}
+                                        {/*                                }*/}
+                                        {/*                            )*/}
+                                        {/*                        }*/}
+                                        {/*                    />*/}
+                                        {/*                ))}*/}
+                                        {/*            </div>*/}
+                                        {/*        </div>*/}
+                                        {/*    )}*/}
                                         <div className={styles["chat-message-action-date"]}>
                                             {isContext
                                                 ? Locale.Chat.IsContext

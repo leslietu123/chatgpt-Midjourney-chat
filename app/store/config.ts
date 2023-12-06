@@ -39,7 +39,7 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-3.5-turbo-16k-0613" as ModelType,
+    model: "gpt-3.5-turbo-1106" as ModelType,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 2000,
