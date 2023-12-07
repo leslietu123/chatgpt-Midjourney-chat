@@ -28,7 +28,6 @@ import {ChakraProvider, theme} from "@chakra-ui/react";
 import chakraTheme from "@/app/thems";
 import {CacheProvider} from '@chakra-ui/next-js'
 import {getConfig} from "@/app/api/back/user";
-import {aws4} from "mongodb/src/deps";
 import {SiteConfig} from "@/app/api/back/types";
 
 mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, {debug: true});

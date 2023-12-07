@@ -1,7 +1,5 @@
 import styles from "./ground.module.scss";
 import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
-import {fetchdraws} from "../api/mongo/ground"
-import {Draws, FetchParams} from "@/app/api/backapi/types";
 import Cover from "./cover";
 import Image from 'next/image';
 import {IconButton} from "@/app/components/button";
