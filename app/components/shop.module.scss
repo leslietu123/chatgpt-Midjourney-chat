@@ -49,6 +49,9 @@
   border: var(--border-in-light);
   border-radius: 10px;
   padding: 20px;
+  box-sizing: border-box;
+  background-color: rgba(61, 61, 61, 0.07);
+  backdrop-filter: blur(20px);
 
 }
 
@@ -59,10 +62,7 @@
 }
 
 .shop-card-item-selected {
-  border: 1px solid #7269ef;
-  box-sizing: border-box;
-  background-color: rgba(61, 61, 61, 0.07);
-  backdrop-filter: blur(20px);
+  border: 2px solid #7269ef;
 }
 
 .shop-card-price {

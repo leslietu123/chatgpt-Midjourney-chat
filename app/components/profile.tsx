@@ -18,7 +18,7 @@ import PopUp from "./pop";
 import {PointsListProps, tarns,} from "../api/backapi/types";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {getMe, getMyLogs} from "@/app/api/back/user";
-import {Log, User} from "../api/back/types";
+import {Log, SiteConfig, User} from "../api/back/types";
 import {Flex, Spacer, Text} from "@chakra-ui/react";
 
 
@@ -140,7 +140,11 @@ function PointsList(props: PointsListProps) {
 };
 
 
-export function UserProfile() {
+interface UserProfileProps {
+    siteConfig?: SiteConfig
+}
+
+export function UserProfile(props: UserProfileProps) {
     const navigate = useNavigate();
     const userToken = localStorage.getItem("user_token");
     const [userInfo, setUserInfo] = React.useState<User>(initUser);
@@ -180,7 +184,7 @@ export function UserProfile() {
     };
     const copyLinkClipboard = async () => {
         try {
-            await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_FRONT_URL}/#/sign-up?ref=` + userInfo.ref_code);
+            await navigator.clipboard.writeText(`${props.siteConfig?.front_url || ""}/#/sign-up?ref=` + userInfo.ref_code);
             showToast("已复制到剪切板");
         } catch (err) {
             showToast("复制失败");
@@ -291,7 +295,7 @@ export function UserProfile() {
                                         {!loading &&
                                             <ChatAction text="" icon={<CopyIcon/>} style={{marginTop: "3px"}}
                                                         onClick={copyLinkClipboard}/>}
-                                        <p>{userInfo.ref_code ? `${process.env.NEXT_PUBLIC_FRONT_URL}/#/sign-up?wlr_ref=` + userInfo.ref_code : "..."}</p>
+                                        <p>{userInfo.ref_code ? `${props.siteConfig?.front_url || ""}/#/sign-up?wlr_ref=` + userInfo.ref_code : "..."}</p>
                                     </div>
                                 </div>
                             </div>

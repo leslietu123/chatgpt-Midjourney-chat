@@ -7,10 +7,14 @@ import {Link} from "react-router-dom";
 import {menu} from "../static"
 import {ChakraProvider, Icon} from "@chakra-ui/react";
 import {RiFlashlightFill, RiSettingsFill, RiUser6Fill, RiVipCrownFill} from "react-icons/ri";
+import {getConfig} from "@/app/api/back/user";
+import {useEffect} from "react";
+import {SiteConfig} from "@/app/api/back/types";
 
-
-export function LeftSidebar() {
-
+interface LeftSidebarProps {
+    siteConfig?: SiteConfig
+}
+export function LeftSidebar(props: LeftSidebarProps) {
     const config = useAppConfig();
     const theme = config.theme;
     const location = useLocation();
@@ -23,13 +27,12 @@ export function LeftSidebar() {
         config.update((config) => (config.theme = nextTheme));
     }
 
-
     return (
             <div className={styles["left-sidebar-container"]}>
                 <div className={styles["left-sidebar"]}>
 
                     <Link to={Path.Home}>
-                        <img width={40} src="./tiny-logo.png" alt="site-logo"/>
+                        <img width={40} src={props.siteConfig?.site_logo || ""} alt="site-logo"/>
                     </Link>
 
                     <div className={styles["left-sidebar-content"]}>

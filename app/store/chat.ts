@@ -10,6 +10,7 @@ import {createEmptyMask, Mask} from "./mask";
 import {
     DEFAULT_INPUT_TEMPLATE,
     DEFAULT_SYSTEM_TEMPLATE,
+    KnowledgeCutOffDate,
     StoreKey,
 } from "../constant";
 import {

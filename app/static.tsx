@@ -77,7 +77,7 @@ export const homelist = {
             id: 2,
             name: "AI绘画",
             descriptions: "AI绘画",
-            icon: "./midjourney.png",
+            icon: "./mj-logo2.png",
             img: "./midjourney.svg",
             path: Path.Draw
         },

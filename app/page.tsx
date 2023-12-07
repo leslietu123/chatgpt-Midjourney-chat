@@ -1,13 +1,16 @@
-import { Analytics } from "@vercel/analytics/react";
-import { Home } from "./components/home";
-import { getServerSideConfig } from "./config/server";
+
+import {Home} from "./components/home";
+import {getServerSideConfig} from "./config/server";
+import React from "react";
+
 
 const serverConfig = getServerSideConfig();
 
+
 export default async function App() {
-  return (
-    <>
-      <Home />
-    </>
-  );
+    return (
+        <>
+            <Home/>
+        </>
+    );
 }

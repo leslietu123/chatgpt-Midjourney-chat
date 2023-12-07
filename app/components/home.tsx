@@ -14,7 +14,7 @@ import {Path, SlotID} from "../constant";
 import {ErrorBoundary} from "./error";
 import {getISOLang, getLang} from "../locales";
 import {HashRouter as Router, useLocation, Routes, Route} from "react-router-dom";
-import {useAppConfig} from "../store/config";
+import {useAppConfig} from "@/app/store";
 import {AuthPage} from "./auth";
 import {getClientConfig} from "../config/client";
 import {api} from "../client/api";
@@ -27,6 +27,9 @@ import {getLocalUserInfo, isLogin} from "@/app/api/backapi/user";
 import {ChakraProvider, theme} from "@chakra-ui/react";
 import chakraTheme from "@/app/thems";
 import {CacheProvider} from '@chakra-ui/next-js'
+import {getConfig} from "@/app/api/back/user";
+import {aws4} from "mongodb/src/deps";
+import {SiteConfig} from "@/app/api/back/types";
 
 mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, {debug: true});
 
@@ -160,9 +163,17 @@ function Screen() {
     const isShowKefu = location.pathname === Path.Home
         || location.pathname === Path.UserProfile
         || location.pathname === Path.BuyPoints;
+    const [siteConfig, setSiteConfig] = useState<SiteConfig>({} as SiteConfig);
 
     useEffect(() => {
         loadAsyncGoogleFont();
+        try {
+            getConfig().then(r => {
+                setSiteConfig(r);
+            });
+        }catch (e) {
+            console.error(e);
+        }
     }, []);
 
     useEffect(() => {
@@ -216,18 +227,18 @@ function Screen() {
             ) : (
                 <>
                     {/*<SideBar className={isHome ? styles["sidebar-show"] : ""} />*/}
-                    {!isMobileScreen && <LeftSidebar/>}
+                    {!isMobileScreen && <LeftSidebar siteConfig={siteConfig}/>}
                     {isMobileScreen && !isChat && !isDraw && !isSign && !isShop && !isGround && <MobileSidebar/>}
                     <div className={styles["window-content"]} id={SlotID.AppBody}>
                         <Routes>
-                            <Route path={Path.Home} element={<NewChat/>}/>
-                            <Route path={Path.NewChat} element={<NewChat/>}/>
+                            <Route path={Path.Home} element={<NewChat siteConfig={siteConfig}/>}/>
+                            <Route path={Path.NewChat} element={<NewChat siteConfig={siteConfig}/>}/>
                             <Route path={Path.Masks} element={<MaskPage/>}/>
                             <Route path={Path.Chat} element={<Chat/>}/>
                             <Route path={Path.Settings} element={<Settings/>}/>
                             <Route path={Path.SignUp} element={<SignUp/>}/>
                             <Route path={Path.SignIn} element={<SignIn/>}/>
-                            <Route path={Path.UserProfile} element={<UserProfile/>}/>
+                            <Route path={Path.UserProfile} element={<UserProfile siteConfig={siteConfig}/>}/>
                             <Route path={Path.BuyPoints} element={<BuyPoints/>}/>
                             <Route path={Path.Draw} element={<Draw/>}/>
                             <Route path={Path.Ground} element={<Ground/>}/>
@@ -252,6 +263,7 @@ export function useLoadData() {
 }
 
 export function Home() {
+
     useSwitchTheme();
     useLoadData();
     useHtmlLang();

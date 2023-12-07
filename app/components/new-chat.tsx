@@ -17,6 +17,7 @@ import {Masks} from "../masks/masks"
 import {homelist} from "../static"
 import {Link} from "react-router-dom";
 import Image from "next/image";
+import {SiteConfig} from "@/app/api/back/types";
 
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
@@ -93,7 +94,11 @@ function useMaskGroup(masks: Mask[]) {
     return groups;
 }
 
-export function NewChat() {
+interface NewChatProps {
+    siteConfig?: SiteConfig
+}
+
+export function NewChat(props: NewChatProps) {
     const chatStore = useChatStore();
     const maskStore = useMaskStore();
     const theme = useAppConfig().theme;
@@ -140,8 +145,8 @@ export function NewChat() {
 
                 <div className={styles["new-chat-left-header"]}>
                     <img width={150} src={theme === "dark" ? "/site-logo.png":"/site-logo-light.png"} alt=""/>
-                    <h1 className={styles["new-chat-left-title"]}>{process.env.NEXT_PUBLIC_SITE_SLOGEN}</h1>
-                    <h2 className={styles["new-chat-left-sub-title"]}>{process.env.NEXT_PUBLIC_SITE_SUB_SLOGEN}</h2>
+                    <h1 className={styles["new-chat-left-title"]}>{props.siteConfig?.site_title}</h1>
+                    <h2 className={styles["new-chat-left-sub-title"]}>{props.siteConfig?.sub_title}</h2>
                     <div className={styles["new-chat-left-header-content"]}>
                         {homelist.item1.map((item, index) => (
                             <button type="button" key={item.id} className={styles["new-chat-left-header-left"]} onClick={()=>navigate(item.path)}>

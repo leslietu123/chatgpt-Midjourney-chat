@@ -1,26 +1,9 @@
 import {
     AddUser,
-    AddUserResponse,
     LoginResponse,
     User,
-    UserResponse,
-    Order,
-    OrderResponse,
-    GptKey,
-    GptKeyResponse,
-    MjKeyResponse,
     ErrResponse,
-    AddGptKey,
-    MjKey,
-    AddMjKey,
-    PaymentMethodResponse,
-    PaymentMethod,
-    UpdatePaymentMethod,
-    MemberResponse,
-    PointsResponse,
-    Member,
-    Point,
-    Sms, SmsAuthResponse, SmsSendResponse, LogResponse,
+    SmsAuthResponse, SmsSendResponse, LogResponse, SiteConfig,
 } from "./types";
 import axios from "axios";
 
@@ -112,7 +95,7 @@ export async function getMe(): Promise<User> {
     }
 }
 
-export async function getMyLogs(page:number): Promise<LogResponse> {
+export async function getMyLogs(page: number): Promise<LogResponse> {
     try {
         const res = await axios.get('api/back/log/me', {
             params: {
@@ -121,6 +104,19 @@ export async function getMyLogs(page:number): Promise<LogResponse> {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${localStorage.getItem('user_token') || ''}`,
+            },
+        });
+        return res.data;
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
+
+export async function getConfig(): Promise<SiteConfig> {
+    try {
+        const res = await axios.get('api/back/site-config/config', {
+            headers: {
+                'Content-Type': 'application/json',
             },
         });
         return res.data;

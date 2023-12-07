@@ -71,10 +71,11 @@ export type Point = {
     unlimited: boolean;
     consumption: consumption;
 }
-export interface consumption{
-    mj:number,
-    gpt3_5:number,
-    gpt4_0:number,
+
+export interface consumption {
+    mj: number,
+    gpt3_5: number,
+    gpt4_0: number,
 }
 
 export type Member = {
@@ -342,4 +343,14 @@ export type Log = {
 export type LogResponse = {
     data: Log[];
     total: number;
+}
+
+export type SiteConfig = {
+    site_title: string,
+    sub_title: string,
+    description: string,
+    site_logo: string,
+    home_logo: string,
+    front_url: string,
+    base_url: string,
 }

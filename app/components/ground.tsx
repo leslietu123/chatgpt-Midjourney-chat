@@ -123,11 +123,11 @@ export function Ground() {
                 }}>
                     {draws.map((item, index) => {
                         return (
-                            <div key={item._id} className={styles['mItem']} onClick={() => {
+                            <div key={index} className={styles['mItem']} onClick={() => {
                                 setSelectDraw(item);
                                 setOpen(true);
                             }}>
-                                <Image key={index} layout="fill" src={item.uri} alt={item._id}
+                                <Image layout="fill" src={item.uri} alt={item._id}
                                        className={styles["ground__draw-img"]}
                                 />
                                 <Flex padding={1} className={styles['mItem-cover']}>
