@@ -1,6 +1,9 @@
 import {DeleteOutlined} from "@ant-design/icons";
 import React, {useState, useRef} from "react";
 import styles from "./draw-imageuploader.module.scss";
+import {AiOutlineCloudUpload} from "react-icons/ai";
+import {GiTwoCoins} from "react-icons/gi";
+import {Icon} from "@chakra-ui/react";
 
 interface ImageUploaderProps {
     onUpload: (uploadedImages: File[]) => void;
@@ -31,7 +34,7 @@ export function ImageUploader(props: ImageUploaderProps) {
         <div className={styles["upload-container"]}>
             <div className={styles["upload-btn"]} onClick={handleButtonClick}>
         <span>
-          <img src="/icons8-image.svg" alt=""/>
+            <Icon as={AiOutlineCloudUpload} width="20px" height="20px" mr={2} color="inherit" />
           选择最多5张图片 {images.length}/5
         </span>
                 <input

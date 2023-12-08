@@ -3,7 +3,7 @@ import {
     LoginResponse,
     User,
     ErrResponse,
-    SmsAuthResponse, SmsSendResponse, LogResponse, SiteConfig,
+    SmsAuthResponse, SmsSendResponse, LogResponse, SiteConfig, VisitReq,
 } from "./types";
 import axios from "axios";
 
@@ -125,6 +125,20 @@ export async function getConfig(): Promise<SiteConfig> {
     }
 }
 
+
+export async function addVisit(data: VisitReq): Promise<boolean> {
+    try {
+        const res = await axios.post('api/back/app/visit', data, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('user_token') || ''}`,
+            },
+        });
+        return res.data;
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
 
 
 

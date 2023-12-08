@@ -27,8 +27,9 @@ import {getLocalUserInfo, isLogin} from "@/app/api/backapi/user";
 import {ChakraProvider, theme} from "@chakra-ui/react";
 import chakraTheme from "@/app/thems";
 import {CacheProvider} from '@chakra-ui/next-js'
-import {getConfig} from "@/app/api/back/user";
+import {addVisit, getConfig} from "@/app/api/back/user";
 import {SiteConfig} from "@/app/api/back/types";
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, {debug: true});
 
@@ -148,7 +149,6 @@ const loadAsyncGoogleFont = () => {
 
 function Screen() {
     const theme = useAppConfig().theme;
-    console.log(theme);
     const isSignIn = isLogin();
     const config = useAppConfig();
     const location = useLocation();
@@ -170,20 +170,27 @@ function Screen() {
             getConfig().then(r => {
                 setSiteConfig(r);
             });
-        }catch (e) {
+        } catch (e) {
             console.error(e);
         }
     }, []);
 
     useEffect(() => {
-        getLocalUserInfo().then(r => {
-            mixpanel.track(`浏览${location.pathname}`, {
-                "页面路径": location.pathname,
-                "是否登录": isSignIn,
-                "是否移动端": isMobileScreen,
-                "用户名": r.username ? r.username : "未登录",
-            });
+        FingerprintJS.load().then(r => {
+            r.get().then(result => {
+                console.log(result.visitorId)
+                addVisit({
+                    user_id: localStorage.getItem("user_token") || "",
+                    user_finger_id: result.visitorId,
+                    userAgent: navigator.userAgent,
+                    path: location.pathname,
+                    referrer: document.referrer,
+                }).then(res => {
+                    console.log(res);
+                });
+            })
         });
+
     }, [location.pathname]);
 
     return (

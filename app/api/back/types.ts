@@ -354,3 +354,13 @@ export type SiteConfig = {
     front_url: string,
     base_url: string,
 }
+
+export type VisitReq = {
+    ip?: string,
+    user_id?: string,
+    user_finger_id?: string,
+    userAgent?: string,
+    path?: string,
+    visitDate?: Date,
+    referrer?: string,
+}
