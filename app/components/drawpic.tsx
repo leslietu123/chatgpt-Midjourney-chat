@@ -41,7 +41,7 @@ export function DrawImg(props: DrawImgProps) {
                 )}
                 <Image
                     layout="fill"
-                    src={props.onDrawImg?.url ? props.onDrawImg?.url : props.onDrawImg?.uri || "/no-found.png"}
+                    src={props.onDrawImg?.url ? props.onDrawImg?.url : props.onDrawImg?.uri || "https://aiapi.d7w.net/uploads/static/no-found.png"}
                     alt={props.onDrawImg?.url ? props.onDrawImg?.url : props.onDrawImg?.uri || "no-found.png"}
                     className={styles["draw-img"]}
                     onClick={() => setOpen(true)}
