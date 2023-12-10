@@ -29,7 +29,7 @@ const nextConfig = {
   output: mode,
   images: {
     unoptimized: mode === "export",
-    domains: ['midcdn.aispace.site','midcdn.funny-code.top','cdn.bsad.top','cdn.funny-code.top','img.qianguyi.ai','ai.d7w.net','aiapi.d7w.net','img.d7w.net'],
+    domains: ['midcdn.aispace.site','midcdn.funny-code.top','cdn.bsad.top','cdn.funny-code.top','img.qianguyi.ai','ai.d7w.net','aiapi.d7w.net','img.d7w.net','*.youmeik.top','api.youmeik.top','img.youmeik.top'],
 
   },
   experimental: {

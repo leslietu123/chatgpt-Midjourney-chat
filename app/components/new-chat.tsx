@@ -144,7 +144,7 @@ export function NewChat(props: NewChatProps) {
             <div className={styles["new-chat-left"]}>
 
                 <div className={styles["new-chat-left-header"]}>
-                    <img width={150} src={theme === "dark" ? "/site-logo.png":"/site-logo-light.png"} alt=""/>
+                    {/*<img width={150} src={theme === "dark" ? "/site-logo.png":"/site-logo-light.png"} alt=""/>*/}
                     <h1 className={styles["new-chat-left-title"]}>{props.siteConfig?.site_title}</h1>
                     <h2 className={styles["new-chat-left-sub-title"]}>{props.siteConfig?.sub_title}</h2>
                     <div className={styles["new-chat-left-header-content"]}>
