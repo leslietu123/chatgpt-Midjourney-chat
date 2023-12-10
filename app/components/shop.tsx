@@ -224,7 +224,7 @@ export function Shop() {
                                                         {key}
                                                     </div>
                                                     <div className={styles["shop-card-item-info"]}>
-                                                        {value}
+                                                        {`${value} /次`}
                                                     </div>
                                                 </div>
                                             )

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {checkRes, CreateOrder, Member, Order, PaymentMethod, userAction} from "@/app/api/back/types";
+import {checkRes, CreateOrder, Member, modelEnum, Order, PaymentMethod, userAction} from "@/app/api/back/types";
 
 export async function getMembers(): Promise<Member[]> {
     try {
@@ -60,11 +60,12 @@ export async function Pay(id: string) {
     }
 }
 
-export async function checkInfo(action: userAction): Promise<checkRes> {
+export async function checkInfo(action: modelEnum,useOwnKey:boolean): Promise<checkRes> {
     try {
         const res = await axios.post('api/back/users/check',
             {
                 action: action,
+                useOwnKey:useOwnKey,
             },
             {
                 headers: {
@@ -79,7 +80,7 @@ export async function checkInfo(action: userAction): Promise<checkRes> {
 
 }
 
-export async function checkout(action: userAction): Promise<checkRes> {
+export async function checkout(action: modelEnum): Promise<checkRes> {
     try {
         const res = await axios.post('api/back/users/checkout',
             {

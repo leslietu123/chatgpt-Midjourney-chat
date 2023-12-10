@@ -1,15 +1,9 @@
 import {useDebouncedCallback} from "use-debounce";
-import React, {
-    useState,
-    useRef,
-    useEffect,
-    useMemo,
-    Fragment,
-} from "react";
-import homestyles from "./home.module.scss";
+import React, {Fragment, useEffect, useMemo, useRef, useState,} from "react";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
+import EditIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
@@ -23,7 +17,6 @@ import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
 import DeleteIcon from "../icons/clear.svg";
 import PinIcon from "../icons/pin.svg";
-import EditIcon from "../icons/rename.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import CancelIcon from "../icons/cancel.svg";
 
@@ -36,24 +29,19 @@ import RobotIcon from "../icons/robot.svg";
 import Image from "next/image";
 
 import {
-    ChatMessage,
-    SubmitKey,
-    useChatStore,
     BOT_HELLO,
+    ChatMessage,
     createMessage,
-    useAccessStore,
-    Theme,
-    useAppConfig,
     DEFAULT_TOPIC,
     ModelType,
+    SubmitKey,
+    Theme,
+    useAccessStore,
+    useAppConfig,
+    useChatStore,
 } from "../store";
 
-import {
-    copyToClipboard,
-    selectOrCopy,
-    autoGrowTextArea,
-    useMobileScreen,
-} from "../utils";
+import {autoGrowTextArea, copyToClipboard, selectOrCopy, useMobileScreen,} from "../utils";
 
 import dynamic from "next/dynamic";
 
@@ -64,39 +52,23 @@ import Locale from "../locales";
 import {IconButton} from "./button";
 import styles from "./chat.module.scss";
 
-import {
-    List,
-    ListItem,
-    Modal,
-    Selector,
-    showConfirm,
-    showPrompt,
-    showToast,
-} from "./ui-lib";
+import {List, ListItem, Modal, Selector, showConfirm, showPrompt, showToast,} from "./ui-lib";
 import {useNavigate} from "react-router-dom";
-import {
-    CHAT_PAGE_SIZE,
-    LAST_INPUT_KEY,
-    Path,
-    REQUEST_TIMEOUT_MS,
-} from "../constant";
-import {Avatar} from "./emoji";
+import {CHAT_PAGE_SIZE, LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS,} from "../constant";
+// import {Avatar} from "./emoji";
 import {ContextPrompts, MaskAvatar, MaskConfig} from "./mask";
 import {useMaskStore} from "../store/mask";
 import {ChatCommandPrefix, useChatCommand, useCommand} from "../command";
 import {prettyObject} from "../utils/format";
 import {ExportMessageModal} from "./exporter";
 import {getClientConfig} from "../config/client";
-import {ChatList} from "./chat-list";
 import {SideBar} from "./sidebar";
-import {fetchUserInfo, isLogin} from "@/app/api/backapi/user";
-import {Checkout, CheckPoints} from "@/app/api/backapi/checkout";
-import {theme} from "antd";
+import {isLogin} from "@/app/api/backapi/user";
 import {checkInfo} from "@/app/api/back/shop";
-import {userAction} from "@/app/api/back/types";
+import {modelEnum, openAIKey, User} from "@/app/api/back/types";
 import {initUser} from "@/app/components/profile";
-import { User} from "@/app/api/back/types";
-import {getMe} from "@/app/api/back/user";
+import {getMe, updateUseOwnKey} from "@/app/api/back/user";
+import {Avatar} from "@chakra-ui/react";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
     loading: () => <LoadingIcon/>,
@@ -671,6 +643,11 @@ function _Chat() {
     const {submitKey, shouldSubmit} = useSubmitHandler();
     const {scrollRef, setAutoScroll, scrollDomToBottom} = useScrollToBottom();
     const [hitBottom, setHitBottom] = useState(true);
+    const [useOwnKey, setUseOwnKey] = useState<openAIKey>({
+        active: false,
+        key: '',
+        proxy_url: '',
+    })
     const isMobileScreen = useMobileScreen();
     const navigate = useNavigate();
     const theme = useAppConfig().theme;
@@ -684,6 +661,29 @@ function _Chat() {
             }
         }
         , [])
+
+
+    const handleFormDataChange = async () => {
+        let updatedFormData;
+        const storedData = localStorage.getItem('formData');
+        try {
+            updatedFormData = storedData ? JSON.parse(storedData) : {};
+            if (updatedFormData) {
+                await updateUseOwnKey({
+                    active: updatedFormData.active,
+                    key: updatedFormData.key,
+                    proxy: updatedFormData.proxy_url,
+                })
+            }
+        } catch (error) {
+            console.error("Parsing error: ", error);
+        }
+        setUseOwnKey(updatedFormData);
+    };
+
+    useEffect(() => {
+        handleFormDataChange()
+    }, []);
 
     // prompt hints
     const promptStore = usePromptStore();
@@ -751,14 +751,78 @@ function _Chat() {
         }
     };
 
+    const isKeyValid = (key: string | null) => {
+        return key !== "" && key != null;
+    }
+
+    const areAllKeysValid = (useOwnKey: openAIKey, keys: any[]) => {
+        return keys.every(key => isKeyValid(useOwnKey[key]));
+    }
+
+    let selectModel: modelEnum
+    switch (currentModel) {
+        case "gpt-4":
+            selectModel = modelEnum.gpt_4;
+            break;
+        case "gpt-4-0613":
+            selectModel = modelEnum.gpt_4_0613;
+            break;
+        case "gpt-4-32k-0314":
+            selectModel = modelEnum.gpt_4_32k_0314;
+            break;
+        case "gpt-4-0314":
+            selectModel = modelEnum.gpt_4_0314;
+            break;
+        case "gpt-4-32k":
+            selectModel = modelEnum.gpt_4_32k;
+            break;
+        case "gpt-4-32k-0613":
+            selectModel = modelEnum.gpt_4_32k_0613;
+            break;
+        case "gpt-4-1106-preview":
+            selectModel = modelEnum.gpt_4_1106_preview;
+            break;
+        case "gpt-4-vision-preview":
+            selectModel = modelEnum.gpt_4_vision_preview;
+            break;
+        case "gpt-3.5-turbo":
+            selectModel = modelEnum.gpt_3_5_turbo;
+            break;
+        case "gpt-3.5-turbo-0301":
+            selectModel = modelEnum.gpt_3_5_turbo_0301;
+            break;
+        case "gpt-3.5-turbo-0613":
+            selectModel = modelEnum.gpt_3_5_turbo_0613;
+            break;
+        case "gpt-3.5-turbo-1106":
+            selectModel = modelEnum.gpt_3_5_turbo_1106;
+            break;
+        case "gpt-3.5-turbo-16k":
+            selectModel = modelEnum.gpt_3_5_turbo_16k;
+            break;
+        case "gpt-3.5-turbo-16k-0613":
+            selectModel = modelEnum.gpt_3_5_turbo_16k_0613;
+            break;
+        default:
+            break;
+    }
+
     const doSubmit = async (userInput: string, extAttr?: any) => {
         if (!islogin) {
             showToast("请先登录");
             navigate(Path.SignUp);
             return;
         }
+
+        if (useOwnKey.active) {
+            const requiredKeys = ['active', 'key'];
+            if (!areAllKeysValid(useOwnKey, requiredKeys)) {
+                showToast("请先设置自己的API");
+                return;
+            }
+        }
         try {
-            const res = await checkInfo(notGpt4 ? userAction.gpt3_5 : userAction.gpt4_0);
+            const res = await checkInfo(selectModel, useOwnKey.active);
             console.log(res)
             if (!res.status) {
                 showToast(res && res.msg ? res.msg : "提交失败");
@@ -784,12 +848,12 @@ function _Chat() {
                     return;
                 }
                 try {
-                    const res: any = await chatStore.onUserInput(userInput, {
+                    const res: any = await chatStore.onUserInput(userInput, useOwnKey.active, selectModel,{
                         useImages,
                         mjImageMode,
                         setAutoScroll,
                         botMsg: extAttr?.botMsg,
-                    },notGpt4);
+                    }, notGpt4);
                     if (res !== false) {
                         localStorage.setItem(LAST_INPUT_KEY, userInput);
                         setUserInput("");
@@ -945,7 +1009,7 @@ function _Chat() {
 
         // resend the message
         setIsLoading(true);
-        chatStore.onUserInput(userMessage.content).then(() => setIsLoading(false));
+        chatStore.onUserInput(userMessage.content, useOwnKey.active,selectModel).then(() => setIsLoading(false));
         inputRef.current?.focus();
     };
 
@@ -1115,20 +1179,12 @@ function _Chat() {
         },
     });
 
-    // messages?.forEach((msg) => {
-    //     console.log('each')
-    //     if (msg.model === "midjourney" && msg.attr?.taskId) {
-    //         chatStore.fetchMidjourneyStatus(msg);
-    //     }
-    // });
-
-    // edit / insert message modal
     const [isEditingMessage, setIsEditingMessage] = useState(false);
 
 
     return (
         <div className={styles["chat-container"]}>
-            <SideBar/>
+            <SideBar onChange={handleFormDataChange}/>
             <div className={styles.chat} key={session.id}>
 
                 <div className="window-header" data-tauri-drag-region>
@@ -1152,9 +1208,40 @@ function _Chat() {
                         >
                             {!session.topic ? DEFAULT_TOPIC : session.topic}
                         </div>
-                        {userInfo && userInfo._id !== "" && !userInfo.member.point.unlimited &&(
+                        {userInfo && userInfo._id !== "" && !userInfo.member.point.unlimited && !useOwnKey.active && (
                             <div className="window-header-sub-title">
-                                {`${notGpt4 ? currentModel + ` # ${userInfo.member.point.consumption.gpt3_5}积分/次` : currentModel + ` # ${userInfo.member.point.consumption.gpt4_0}积分/次`}`}
+                                {(() => {
+                                    switch (currentModel) {
+                                        case "gpt-4":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4}积分/次`;
+                                        case "gpt-4-0314":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_0314}积分/次`;
+                                        case "gpt-4-0613":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_0613}积分/次`;
+                                        case "gpt-4-32k":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_32k}积分/次`;
+                                        case "gpt-4-32k-0314":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_32k_0314}积分/次`;
+                                        case "gpt-4-32k-0613":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_32k_0613}积分/次`;
+                                        case "gpt-4-1106-preview":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_1106_preview}积分/次`;
+                                        case "gpt-4-vision-preview":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_vision_preview}积分/次`;
+                                        case "gpt-3.5-turbo":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo}积分/次`;
+                                        case "gpt-3.5-turbo-0301":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_0301}积分/次`;
+                                        case "gpt-3.5-turbo-0613":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_0613}积分/次`;
+                                        case "gpt-3.5-turbo-1106":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_1106}积分/次`;
+                                        case "gpt-3.5-turbo-16k":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_16k}积分/次`;
+                                        case "gpt-3.5-turbo-16k-0613":
+                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_16k_0613}积分/次`;
+                                    }
+                                })()}
                             </div>
                         )}
                     </div>
@@ -1251,10 +1338,13 @@ function _Chat() {
                                                         }}
                                                     ></IconButton>
                                                 </div>
-                                                {isUser ? (
-                                                    <Avatar avatar={config.avatar}/>
+                                                {notGpt4 ? (
+                                                    // <Avatar avatar={config.avatar}/>
+                                                    // <img width={20} src="./avatar_35.jpg" alt=""/>
+                                                    <Avatar size={'sm'} name='Ryan Florence' src='./avatar_35.jpg' />
                                                 ) : (
-                                                    <MaskAvatar mask={session.mask}/>
+                                                    <Avatar size={'sm'} name='Ryan Florence' src='./avatar_40.jpg' />
+                                                    // <MaskAvatar mask={session.mask}/>
                                                 )}
                                             </div>
 

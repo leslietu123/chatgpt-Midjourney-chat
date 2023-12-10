@@ -3,7 +3,7 @@ import {
     LoginResponse,
     User,
     ErrResponse,
-    SmsAuthResponse, SmsSendResponse, LogResponse, SiteConfig, VisitReq,
+    SmsAuthResponse, SmsSendResponse, LogResponse, SiteConfig, VisitReq, UpdateUseOwnKey,
 } from "./types";
 import axios from "axios";
 
@@ -140,6 +140,20 @@ export async function addVisit(data: VisitReq): Promise<boolean> {
     }
 }
 
+
+export async function updateUseOwnKey(data:UpdateUseOwnKey): Promise<User>{
+    try {
+        const res = await axios.patch('api/back/users/useownkey', data, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('user_token') || ''}`,
+            },
+        });
+        return res.data;
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
 
 
 

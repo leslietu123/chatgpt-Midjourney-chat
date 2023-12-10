@@ -130,6 +130,7 @@ export function getHeaders() {
   let headers: Record<string, string> = {
     "Content-Type": "application/json",
     "x-requested-with": "XMLHttpRequest",
+    "Authorization": `Bearer ${localStorage.getItem('user_token') || ''}`,
   };
 
   const makeBearer = (token: string) => `Bearer ${token.trim()}`;

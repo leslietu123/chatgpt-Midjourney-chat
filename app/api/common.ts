@@ -17,18 +17,23 @@ const PROTOCOL = process.env.PROTOCOL || DEFAULT_PROTOCOL;
 const DISABLE_GPT4 = !!process.env.DISABLE_GPT4;
 
 
-async function getKey(): Promise<Key> {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL}/gpt/one`);
+async function getKey(req: NextRequest): Promise<Key> {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_URL}/gpt/one`,{
+        headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-store",
+            Authorization: req.headers.get("Authorization") ?? "",
+        },
+    });
     return await response.json();
 }
 
 export async function requestOpenai(req: NextRequest) {
-    const key = await getKey()
+    const key = await getKey(req)
     const OPENAI_URL = key.isProxy ? key.proxy : "api.openai.com";
     const BASE_URL = process.env.BASE_URL || OPENAI_URL;
     const controller = new AbortController();
     const authValue = req.headers.get("Authorization") ?? "";
-    console.log("[Auth]", authValue);
     const openaiPath = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
         "/api/openai/",
         "",

@@ -27,7 +27,7 @@ import {CheckoutParams, CheckoutRes} from "@/app/api/backapi/types";
 import {Checkout} from "@/app/api/backapi/checkout";
 import {useState} from "react";
 import {checkout} from "@/app/api/back/shop";
-import {userAction} from "@/app/api/back/types";
+import {modelEnum, userAction} from "@/app/api/back/types";
 
 export type ChatMessage = RequestMessage & {
     date: string;
@@ -105,7 +105,7 @@ interface ChatStore {
     currentSession: () => ChatSession;
     nextSession: (delta: number) => void;
     onNewMessage: (message: ChatMessage) => void;
-    onUserInput: (content: string, extAttr?: any, notGpt4?: boolean) => Promise<void>;
+    onUserInput: (content: string,useOwnKey:boolean,selectModel: modelEnum, extAttr?: any, notGpt4?: boolean) => Promise<void>;
     summarizeSession: () => void;
     updateStat: (message: ChatMessage) => void;
     updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -398,7 +398,7 @@ export const useChatStore = create<ChatStore>()(
                 }, 3000);
             },
 
-            async onUserInput(content, extAttr?: any, notGpt4?: any) {
+            async onUserInput(content,useOwnKey,selectModel, extAttr?: any, notGpt4?: any) {
                 const session = get().currentSession();
                 const modelConfig = session.mask.modelConfig;
 
@@ -563,9 +563,9 @@ export const useChatStore = create<ChatStore>()(
                         botMessage.streaming = true;
                         if (message) {
                             botMessage.content = message;
-                            if (!payed) {
+                            if (!payed && !useOwnKey) {
                                 payed = true;
-                                const res = await checkout(notGpt4 ? userAction.gpt3_5 : userAction.gpt4_0)
+                                const res = await checkout(selectModel)
                                 if (res.status) {
                                     console.log(res.msg)
                                 } else {

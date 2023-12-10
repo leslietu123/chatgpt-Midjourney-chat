@@ -177,17 +177,14 @@ function Screen() {
 
     useEffect(() => {
         FingerprintJS.load().then(r => {
-            r.get().then(result => {
-                console.log(result.visitorId)
-                addVisit({
+            r.get().then(async result => {
+                await addVisit({
                     user_id: localStorage.getItem("user_token") || "",
                     user_finger_id: result.visitorId,
                     userAgent: navigator.userAgent,
                     path: location.pathname,
                     referrer: document.referrer,
-                }).then(res => {
-                    console.log(res);
-                });
+                })
             })
         });
 

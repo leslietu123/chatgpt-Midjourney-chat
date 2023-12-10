@@ -21,11 +21,14 @@ import {
     REPO_URL,
 } from "../constant";
 
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useMobileScreen} from "../utils";
 import dynamic from "next/dynamic";
 import {showConfirm, showToast} from "./ui-lib";
 import ReturnIcon from "@/app/icons/return.svg";
+import {Flex, FormControl, FormLabel, Link, Switch, Text} from "@chakra-ui/react";
+import OwnKeySetting from "@/app/components/own-key-setting";
+import {openAIKey} from "@/app/api/back/types";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
     loading: () => null,
@@ -98,7 +101,13 @@ function useDragSideBar() {
     };
 }
 
-export function SideBar(props: { className?: string }) {
+interface SidebarProps {
+    className?: string;
+    onSubmit?: (formData: any) => void;
+    onChange?: () => void;
+}
+
+export function SideBar(props: SidebarProps) {
     const chatStore = useChatStore();
     const isMobileScreen = useMobileScreen();
 
@@ -116,33 +125,39 @@ export function SideBar(props: { className?: string }) {
             }`}
         >
             <div className={styles["sidebar-header"]} data-tauri-drag-region>
-
-
                 <div className={styles["sidebar-title"]} data-tauri-drag-region>
                     AI 对话
                 </div>
             </div>
-
-
-
             <div
                 className={styles["sidebar-body"]}
-                // onClick={(e) => {
-                //   if (e.target === e.currentTarget) {
-                //     navigate(Path.Home);
-                //   }
-                // }}
             >
                 <ChatList narrow={shouldNarrow} onClick={() => setShowSidebar(!showSidebar)}/>
             </div>
+            <Flex justifyContent='center' alignItems='center' border='var(--border-in-light)' p={2} borderRadius={10}>
+                <FormControl display='flex' justifyContent='center' alignItems='center'>
+                    <FormLabel fontSize={12} mb='0'>
+                        使用自己的API{' '}
+                        <OwnKeySetting <openAIKey>
+                            storageKey='formData'
+                            visibleFields={["key","proxy_url"]}
+                            onChange={() => {
+                                if (typeof props.onChange === 'function') {
+                                    props.onChange();
+                                }
+                            }}
+                            title='设置自己的Openai Key'/>
+                    </FormLabel>
+                </FormControl>
+            </Flex>
 
             <div className={styles["sidebar-tail"]}>
-                <div className={styles["sidebar-actions"]}>
 
+                <div className={styles["sidebar-actions"]}>
                     <div className={styles["sidebar-action"] + " " + styles.mobile}>
                         <IconButton
                             icon={<ReturnIcon/>}
-                            onClick={()=>navigate(Path.Home)}
+                            onClick={() => navigate(Path.Home)}
                         />
                     </div>
                     <div className={styles["sidebar-action"] + " " + styles.mobile}>
@@ -155,11 +170,6 @@ export function SideBar(props: { className?: string }) {
                             }}
                         />
                     </div>
-                    {/*<div className={styles["sidebar-action"]}>*/}
-                    {/*  <Link to={Path.Settings}>*/}
-                    {/*    <IconButton icon={<SettingsIcon />} shadow />*/}
-                    {/*  </Link>*/}
-                    {/*</div>*/}
                 </div>
                 <div>
                     <IconButton

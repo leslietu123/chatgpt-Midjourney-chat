@@ -31,14 +31,15 @@ import {
     sendImagine,
     shareToGround,
 } from "@/app/api/back/mj";
-import {Action, drawRes, Feature, Prompt, User} from "@/app/api/back/types";
-import {Box, ChakraProvider, Flex, Link, Select, Spacer, Tooltip} from "@chakra-ui/react";
+import {Action, drawRes, Feature, mjKey, openAIKey, Prompt, User} from "@/app/api/back/types";
+import {Box, ChakraProvider, Flex, FormControl, FormLabel, Link, Select, Spacer, Tooltip} from "@chakra-ui/react";
 import {NotAllowedIcon, WarningIcon} from "@chakra-ui/icons";
 import io from "socket.io-client";
 import {getTransResult} from "../api/translate/api";
 import chakraTheme from "@/app/thems";
 import {initUser} from "@/app/components/profile";
 import {getMe} from "@/app/api/back/user";
+import OwnKeySetting from "@/app/components/own-key-setting";
 
 
 const {TextArea} = Input;
@@ -93,7 +94,23 @@ export function Draw() {
     const [drawResList, setDrawResList] = useState<drawRes[]>([] as drawRes[])
     const strPrompt = `${prompt.content}${prompt.selectedPrompt.length > 0 ? `,${prompt.selectedPrompt.map(item => item.prompt).join(",")}` : ''}${prompt.model?.value}${prompt.size?.value}${prompt.chaos !== 0 ? ` --chaos ${prompt.chaos}` : ""}${parentImages.length > 0 ? prompt.iw : ""}${prompt.styled !== 0 ? ` --s ${prompt.styled}` : ""}${prompt.stop !== 100 ? ` --stop ${prompt.stop}` : ""}${prompt.weird !== 0 ? ` --weird ${prompt.weird}` : ""}${prompt.tile ? ' --tile' : ""}${prompt.seed !== 0 ? ` --seed ${prompt.seed}` : ""}${prompt.quality?.value}${prompt.version?.value}`
     const [page, setPage] = useState(1)
-    console.log(strPrompt)
+    const [useOwnKey, setUseOwnKey] = useState<mjKey>({} as mjKey)
+
+    const handleFormDataChange = () => {
+        let updatedFormData;
+        const storedData = localStorage.getItem('myOwnMJAPI');
+        try {
+            updatedFormData = storedData ? JSON.parse(storedData) : {};
+        } catch (error) {
+            console.error("Parsing error: ", error);
+        }
+        setUseOwnKey(updatedFormData);
+    };
+
+    useEffect(() => {
+        handleFormDataChange()
+    }, []);
+
 
     useEffect(() => {
             if (userToken && userToken !== "") {
@@ -182,6 +199,15 @@ export function Draw() {
         });
     };
 
+    const isKeyValid = (key: string | null) => {
+        return key !== "" && key != null;
+    }
+
+    const areAllKeysValid = (useOwnKey: mjKey, keys: any[]) => {
+        return keys.every(key => isKeyValid(useOwnKey[key]));
+    }
+
+
     const handleSubmit = async (data: any) => {
         if (!islogin) {
             showToast("请先登录")
@@ -198,6 +224,20 @@ export function Draw() {
         }
         setDrawing(true);
         setOnDrawImg({} as drawRes)
+        if (useOwnKey.active) {
+            const requiredKeys = ['active','user_token', 'session_id', 'server_id', 'channel_id'];
+            if (!areAllKeysValid(useOwnKey, requiredKeys)) {
+                showToast("请先设置自己的API");
+                setDrawing(false);
+                return;
+            }
+            requiredKeys.forEach(key => {
+                data.useOwnkey = {
+                    ...data.useOwnkey,
+                    [key]: useOwnKey[key]
+                };
+            });
+        }
         try {
             setSubmitting(true);
             if (parentImages.length > 0) {
@@ -834,7 +874,10 @@ export function Draw() {
                                                             onChange={(event) => {
                                                                 let selectedValue = event.target.value;
                                                                 let selectedItem = iw.find(item => item.value === selectedValue);
-                                                                setPrompt(prompt => ({...prompt, iw: selectedItem?.value}));
+                                                                setPrompt(prompt => ({
+                                                                    ...prompt,
+                                                                    iw: selectedItem?.value
+                                                                }));
                                                             }}>
                                                         {iw.map((item, index) => (
                                                             <option key={index} value={item.value}>{item.name}</option>
@@ -1082,7 +1125,22 @@ export function Draw() {
                         </div>
 
                         <div className={styles["draw-left-footer"]}>
+
                             <div className={styles["draw-left-footer-btn"]}>
+                                <Flex mb={3} justifyContent='center' alignItems='center' border='var(--border-in-light)'
+                                      p={2}
+                                      borderRadius={10}>
+                                    <FormControl display='flex' justifyContent='center' alignItems='center'>
+                                        <FormLabel fontSize={12} mb='0'>
+                                            使用自己的API{' '}
+                                            <OwnKeySetting<mjKey>
+                                                storageKey='myOwnMJAPI'
+                                                visibleFields={['server_id', 'session_id', 'user_token', 'channel_id']}
+                                                onChange={handleFormDataChange}
+                                                title='设置自己的MJ Key'/>
+                                        </FormLabel>
+                                    </FormControl>
+                                </Flex>
                                 <button
                                     // onClick={active === 0 ? (() => handleAction("imagine")) : (() => handleAction("blend"))}
                                     onClick={active === 0 ? (
@@ -1102,7 +1160,7 @@ export function Draw() {
                                     disabled={drawing || submitting}
                                     className={`${submitting || drawing ? styles["draw-submitting"] : ""}`}>
                                     {drawing ? ("绘图中...") : (submitting ? ("提交中...") : ("提交绘画"))}
-                                    {userInfo && userInfo._id !== "" && !userInfo.member.point.unlimited && (
+                                    {!useOwnKey.active && userInfo && userInfo._id !== "" && !userInfo.member.point.unlimited && (
                                         <span>消耗{userInfo.member.point.consumption.mj}积分</span>
                                     )}
                                 </button>

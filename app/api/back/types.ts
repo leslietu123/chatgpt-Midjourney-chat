@@ -10,6 +10,12 @@ export interface User {
     member: Member;
 }
 
+export type UpdateUseOwnKey ={
+    active:boolean,
+    key:string,
+    proxy:string,
+}
+
 export interface MemberInfo {
     start_at: Date;
     end_at: Date;
@@ -74,9 +80,40 @@ export type Point = {
 
 export interface consumption {
     mj: number,
-    gpt3_5: number,
-    gpt4_0: number,
+    gpt_4:number,
+    gpt_4_0314:number,
+    gpt_4_0613:number,
+    gpt_4_32k:number,
+    gpt_4_32k_0314:number,
+    gpt_4_32k_0613:number,
+    gpt_4_1106_preview:number,
+    gpt_4_vision_preview:number,
+    gpt_3_5_turbo:number,
+    gpt_3_5_turbo_0301:number,
+    gpt_3_5_turbo_0613:number,
+    gpt_3_5_turbo_1106:number,
+    gpt_3_5_turbo_16k:number,
+    gpt_3_5_turbo_16k_0613:number,
 }
+
+export enum modelEnum {
+    mj = 'mj',
+    gpt_4='gpt4',
+    gpt_4_0314='gpt_4_0314',
+    gpt_4_0613='gpt_4_0613',
+    gpt_4_32k='gpt_4_32k',
+    gpt_4_32k_0314='gpt_4_32k_0314',
+    gpt_4_32k_0613='gpt_4_32k_0613',
+    gpt_4_1106_preview='gpt_4_1106_preview',
+    gpt_4_vision_preview='gpt_4_vision_preview',
+    gpt_3_5_turbo='gpt_3_5_turbo',
+    gpt_3_5_turbo_0301='gpt_3_5_turbo_0301',
+    gpt_3_5_turbo_0613='gpt_3_5_turbo_0613',
+    gpt_3_5_turbo_1106='gpt_3_5_turbo_1106',
+    gpt_3_5_turbo_16k='gpt_3_5_turbo_16k',
+    gpt_3_5_turbo_16k_0613='gpt_3_5_turbo_16k_0613',
+}
+
 
 export type Member = {
     name: string;
@@ -363,4 +400,20 @@ export type VisitReq = {
     path?: string,
     visitDate?: Date,
     referrer?: string,
+}
+
+export type openAIKey = {
+    active: boolean,
+    key: string,
+    proxy_url: string,
+    [key: string]: any;
+}
+
+export type mjKey = {
+    active: boolean,
+    session_id: string,
+    user_token:string,
+    channel_id:string,
+    server_id:string,
+    [key: string]: any;
 }
