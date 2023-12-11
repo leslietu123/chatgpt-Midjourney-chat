@@ -27,8 +27,8 @@ interface SettingProps<T> {
 }
 
 export default function OwnKeySetting<T extends { [key: string]: any }>(props: SettingProps<T>) {
-    const { title, visibleFields,storageKey } = props;
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const {title, visibleFields, storageKey} = props;
+    const {isOpen, onOpen, onClose} = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
 
@@ -42,7 +42,7 @@ export default function OwnKeySetting<T extends { [key: string]: any }>(props: S
         }
     }, []);
 
-    const handleSubmit = (formData:T) => {
+    const handleSubmit = (formData: T) => {
         localStorage.setItem(storageKey, JSON.stringify(formData));
         props.onChange && props.onChange();
         showToast('设置成功');
@@ -71,7 +71,7 @@ export default function OwnKeySetting<T extends { [key: string]: any }>(props: S
         } else {
             return (
                 <FormControl mb={3} key={key.toString()}>
-                    <FormLabel>{key.toString()}</FormLabel>
+                    <FormLabel>{key.toString() === 'proxy_url' ? "API地址" : key.toString()}</FormLabel>
                     <Input
                         textAlign={"left"}
                         value={value}

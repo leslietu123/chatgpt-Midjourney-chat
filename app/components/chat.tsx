@@ -633,7 +633,7 @@ function _Chat() {
     const config = useAppConfig();
     const fontSize = config.fontSize;
     const currentModel = chatStore.currentSession().mask.modelConfig.model;
-    const notGpt4 = currentModel !== "gpt-4" && currentModel !== "gpt-4-0613" && currentModel !== "gpt-4-32k-0314" && currentModel !== "gpt-4-0314" && currentModel !== "gpt-4-32k" && currentModel !== "gpt-4-32k-0613" && currentModel !== "gpt-4-1106-preview" && currentModel !== "gpt-4-vision-preview";
+    const notGpt4 = currentModel !== "gpt-4" && currentModel !== "gpt-4-0613" &&  currentModel !== "gpt-4-32k" && currentModel !== "gpt-4-32k-0613" && currentModel !== "gpt-4-1106-preview" && currentModel !== "gpt-4-vision-preview";
     const [showExport, setShowExport] = useState(false);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const [userInput, setUserInput] = useState("");
@@ -767,12 +767,12 @@ function _Chat() {
         case "gpt-4-0613":
             selectModel = modelEnum.gpt_4_0613;
             break;
-        case "gpt-4-32k-0314":
-            selectModel = modelEnum.gpt_4_32k_0314;
-            break;
-        case "gpt-4-0314":
-            selectModel = modelEnum.gpt_4_0314;
-            break;
+        // case "gpt-4-32k-0314":
+        //     selectModel = modelEnum.gpt_4_32k_0314;
+        //     break;
+        // case "gpt-4-0314":
+        //     selectModel = modelEnum.gpt_4_0314;
+        //     break;
         case "gpt-4-32k":
             selectModel = modelEnum.gpt_4_32k;
             break;
@@ -788,12 +788,12 @@ function _Chat() {
         case "gpt-3.5-turbo":
             selectModel = modelEnum.gpt_3_5_turbo;
             break;
-        case "gpt-3.5-turbo-0301":
-            selectModel = modelEnum.gpt_3_5_turbo_0301;
-            break;
-        case "gpt-3.5-turbo-0613":
-            selectModel = modelEnum.gpt_3_5_turbo_0613;
-            break;
+        // case "gpt-3.5-turbo-0301":
+        //     selectModel = modelEnum.gpt_3_5_turbo_0301;
+        //     break;
+        // case "gpt-3.5-turbo-0613":
+        //     selectModel = modelEnum.gpt_3_5_turbo_0613;
+        //     break;
         case "gpt-3.5-turbo-1106":
             selectModel = modelEnum.gpt_3_5_turbo_1106;
             break;
@@ -1214,14 +1214,14 @@ function _Chat() {
                                     switch (currentModel) {
                                         case "gpt-4":
                                             return `${currentModel} # ${userInfo.member.point.consumption.gpt_4}积分/次`;
-                                        case "gpt-4-0314":
-                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_0314}积分/次`;
+                                        // case "gpt-4-0314":
+                                        //     return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_0314}积分/次`;
                                         case "gpt-4-0613":
                                             return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_0613}积分/次`;
                                         case "gpt-4-32k":
                                             return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_32k}积分/次`;
-                                        case "gpt-4-32k-0314":
-                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_32k_0314}积分/次`;
+                                        // case "gpt-4-32k-0314":
+                                        //     return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_32k_0314}积分/次`;
                                         case "gpt-4-32k-0613":
                                             return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_32k_0613}积分/次`;
                                         case "gpt-4-1106-preview":
@@ -1230,10 +1230,10 @@ function _Chat() {
                                             return `${currentModel} # ${userInfo.member.point.consumption.gpt_4_vision_preview}积分/次`;
                                         case "gpt-3.5-turbo":
                                             return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo}积分/次`;
-                                        case "gpt-3.5-turbo-0301":
-                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_0301}积分/次`;
-                                        case "gpt-3.5-turbo-0613":
-                                            return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_0613}积分/次`;
+                                        // case "gpt-3.5-turbo-0301":
+                                        //     return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_0301}积分/次`;
+                                        // case "gpt-3.5-turbo-0613":
+                                        //     return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_0613}积分/次`;
                                         case "gpt-3.5-turbo-1106":
                                             return `${currentModel} # ${userInfo.member.point.consumption.gpt_3_5_turbo_1106}积分/次`;
                                         case "gpt-3.5-turbo-16k":
