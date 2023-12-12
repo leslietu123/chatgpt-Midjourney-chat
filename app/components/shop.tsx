@@ -204,19 +204,6 @@ export function Shop() {
 
 
                                     {!item.point.unlimited && Object.entries(item.point?.consumption).map(([key, value]) => {
-                                        switch (key) {
-                                            case "gpt4_0":
-                                                key = "4.0消耗"
-                                                break;
-                                            case "gpt3_5":
-                                                key = "3.5消耗"
-                                                break;
-                                            case "mj":
-                                                key = "绘图"
-                                                break;
-                                            default:
-                                                break;
-                                        }
                                         return (
                                             (
                                                 <div key={index} className={styles["shop-card-price"]}>
