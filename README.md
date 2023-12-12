@@ -41,6 +41,7 @@ yarn start // #或者开发模式启动： yarn dev
 - pdf问答
 - AI思维导图
 - 更多模型接入
+- golang版本后端
 
 ### 项目演示
 - 演示地址：https://chat.bsad.top (注册赠送300积分体验)
