@@ -239,10 +239,10 @@ export function Draw() {
             showToast("请上传图片")
             return
         }
-        if (checkForForbiddenWords(strPrompt, forbiddenWords)) {
-            showToast(`输入内容包含违禁词--${checkForForbiddenWords(strPrompt, forbiddenWords)}`)
-            return
-        }
+        // if (checkForForbiddenWords(strPrompt, forbiddenWords)) {
+        //     showToast(`输入内容包含违禁词--${checkForForbiddenWords(strPrompt, forbiddenWords)}`)
+        //     return
+        // }
         setDrawing(true);
         setOnDrawImg({} as drawRes)
         // if (useOwnKey.active) {
