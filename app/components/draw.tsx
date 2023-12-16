@@ -14,7 +14,7 @@ import {DrawImg} from "./drawpic"
 import {isLogin} from "@/app/api/backapi/user";
 import ImageUploader from "./draw-imageuploader";
 import InfiniteScroll from "react-infinite-scroll-component";
-import {models, sizes, qualities, versions, iw} from "../static";
+import {models, sizes, qualities, versions, iw,forbiddenWords} from "../static";
 import {
     FetchParams,
 } from "../api/backapi/types";
@@ -31,7 +31,7 @@ import {
     sendImagine,
     shareToGround,
 } from "@/app/api/back/mj";
-import {Action, drawRes, Feature, mjKey, openAIKey, Prompt, User} from "@/app/api/back/types";
+import {Action, drawRes, Feature, ForbiddenWords, mjKey, openAIKey, Prompt, User} from "@/app/api/back/types";
 import {Box, ChakraProvider, Flex, FormControl, FormLabel, Link, Select, Spacer, Tooltip} from "@chakra-ui/react";
 import {NotAllowedIcon, WarningIcon} from "@chakra-ui/icons";
 import io from "socket.io-client";
@@ -40,6 +40,7 @@ import chakraTheme from "@/app/thems";
 import {initUser} from "@/app/components/profile";
 import {getMe} from "@/app/api/back/user";
 import OwnKeySetting from "@/app/components/own-key-setting";
+
 
 
 const {TextArea} = Input;
@@ -191,12 +192,28 @@ export function Draw() {
     }, []);
 
 
-    const checkForForbiddenWords = (input: string, forbiddenWords: any[]) => {
-        const lowerCaseInput = input.toLowerCase();
-        return forbiddenWords.some(word => {
-            const lowerCaseWord = word.toLowerCase();
-            return lowerCaseInput.includes(lowerCaseWord);
-        });
+    // const checkForForbiddenWords = (input: string, forbiddenWords: ForbiddenWords[]) => {
+    //     const lowerCaseInput = input.toLowerCase();
+    //     return forbiddenWords.some(word => {
+    //         const lowerCaseWord = word.words.toLowerCase();
+    //         return lowerCaseInput.includes(lowerCaseWord);
+    //     });
+    // };
+
+
+    const checkForForbiddenWords = (input: string, forbiddenWords: ForbiddenWords[]): string | null => {
+        const wordsInInput = input.split(/\b/); // 使用单词边界分割输入文本
+        for (const forbiddenWord of forbiddenWords) {
+            const lowerCaseForbiddenWord = forbiddenWord.words.toLowerCase();
+            const wordRegex = new RegExp(`\\b${lowerCaseForbiddenWord}\\b`, 'i'); // 创建一个匹配完整单词的正则表达式
+            for (const word of wordsInInput) {
+                if (wordRegex.test(word)) {
+                    console.log(`Forbidden word detected: ${lowerCaseForbiddenWord}`);
+                    return lowerCaseForbiddenWord;
+                }
+            }
+        }
+        return null;
     };
 
     const isKeyValid = (key: string | null) => {
@@ -222,22 +239,26 @@ export function Draw() {
             showToast("请上传图片")
             return
         }
+        if (checkForForbiddenWords(strPrompt, forbiddenWords)) {
+            showToast(`输入内容包含违禁词--${checkForForbiddenWords(strPrompt, forbiddenWords)}`)
+            return
+        }
         setDrawing(true);
         setOnDrawImg({} as drawRes)
-        if (useOwnKey.active) {
-            const requiredKeys = ['active','user_token', 'session_id', 'server_id', 'channel_id'];
-            if (!areAllKeysValid(useOwnKey, requiredKeys)) {
-                showToast("请先设置自己的API");
-                setDrawing(false);
-                return;
-            }
-            requiredKeys.forEach(key => {
-                data.useOwnkey = {
-                    ...data.useOwnkey,
-                    [key]: useOwnKey[key]
-                };
-            });
-        }
+        // if (useOwnKey.active) {
+        //     const requiredKeys = ['active','user_token', 'session_id', 'server_id', 'channel_id'];
+        //     if (!areAllKeysValid(useOwnKey, requiredKeys)) {
+        //         showToast("请先设置自己的API");
+        //         setDrawing(false);
+        //         return;
+        //     }
+        //     requiredKeys.forEach(key => {
+        //         data.useOwnkey = {
+        //             ...data.useOwnkey,
+        //             [key]: useOwnKey[key]
+        //         };
+        //     });
+        // }
         try {
             setSubmitting(true);
             if (parentImages.length > 0) {
@@ -1127,20 +1148,20 @@ export function Draw() {
                         <div className={styles["draw-left-footer"]}>
 
                             <div className={styles["draw-left-footer-btn"]}>
-                                <Flex mb={3} justifyContent='center' alignItems='center' border='var(--border-in-light)'
-                                      p={2}
-                                      borderRadius={10}>
-                                    <FormControl display='flex' justifyContent='center' alignItems='center'>
-                                        <FormLabel fontSize={12} mb='0'>
-                                            使用自己的API{' '}
-                                            <OwnKeySetting<mjKey>
-                                                storageKey='myOwnMJAPI'
-                                                visibleFields={['server_id', 'session_id', 'user_token', 'channel_id']}
-                                                onChange={handleFormDataChange}
-                                                title='设置自己的MJ Key'/>
-                                        </FormLabel>
-                                    </FormControl>
-                                </Flex>
+                                {/*<Flex mb={3} justifyContent='center' alignItems='center' border='var(--border-in-light)'*/}
+                                {/*      p={2}*/}
+                                {/*      borderRadius={10}>*/}
+                                {/*    <FormControl display='flex' justifyContent='center' alignItems='center'>*/}
+                                {/*        <FormLabel fontSize={12} mb='0'>*/}
+                                {/*            使用自己的API{' '}*/}
+                                {/*            <OwnKeySetting<mjKey>*/}
+                                {/*                storageKey='myOwnMJAPI'*/}
+                                {/*                visibleFields={['server_id', 'session_id', 'user_token', 'channel_id']}*/}
+                                {/*                onChange={handleFormDataChange}*/}
+                                {/*                title='设置自己的MJ Key'/>*/}
+                                {/*        </FormLabel>*/}
+                                {/*    </FormControl>*/}
+                                {/*</Flex>*/}
                                 <button
                                     // onClick={active === 0 ? (() => handleAction("imagine")) : (() => handleAction("blend"))}
                                     onClick={active === 0 ? (

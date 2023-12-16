@@ -417,3 +417,8 @@ export type mjKey = {
     server_id:string,
     [key: string]: any;
 }
+
+export type ForbiddenWords ={
+    id?:number,
+    words:string,
+}

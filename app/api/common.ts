@@ -30,6 +30,7 @@ async function getKey(req: NextRequest): Promise<Key> {
 
 export async function requestOpenai(req: NextRequest) {
     const key = await getKey(req)
+    console.log("key",key)
     const OPENAI_URL = key.isProxy ? key.proxy : "api.openai.com";
     const BASE_URL = process.env.BASE_URL || OPENAI_URL;
     const controller = new AbortController();

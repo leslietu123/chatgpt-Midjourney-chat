@@ -16,6 +16,9 @@ import {
 } from "@chakra-ui/react";
 import React, {useEffect, useState} from "react";
 import {showToast} from "@/app/components/ui-lib";
+import {isLogin} from "@/app/api/backapi/user";
+import {useNavigate} from "react-router-dom";
+import { Path } from "../constant";
 
 
 interface SettingProps<T> {
@@ -31,9 +34,10 @@ export default function OwnKeySetting<T extends { [key: string]: any }>(props: S
     const {isOpen, onOpen, onClose} = useDisclosure();
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
-
+    const islogin = isLogin();
     // 默认表单状态可以是空对象，因为字段将会动态添加
     const [formData, setFormData] = useState<T>({} as T);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const storedFormData = localStorage.getItem(storageKey);
@@ -43,6 +47,11 @@ export default function OwnKeySetting<T extends { [key: string]: any }>(props: S
     }, []);
 
     const handleSubmit = (formData: T) => {
+        if(!islogin){
+            showToast('请先登录');
+            navigate(Path.SignIn)
+            return;
+        }
         localStorage.setItem(storageKey, JSON.stringify(formData));
         props.onChange && props.onChange();
         showToast('设置成功');
