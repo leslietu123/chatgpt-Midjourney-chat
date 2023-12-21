@@ -42,6 +42,7 @@ export const versions: Version[] = [
     {id: 2, name: "v5", description: "v5", value: " --v 5"},
     {id: 3, name: "v5.1", description: "v5.1", value: " --v 5.1"},
     {id: 4, name: "v5.2", description: "v5.2", value: " --v 5.2"},
+    {id: 5, name: "v6", description: "v6", value: " --v 6"},
 ];
 
 
