@@ -239,26 +239,26 @@ export function Draw() {
             showToast("请上传图片")
             return
         }
-        // if (checkForForbiddenWords(strPrompt, forbiddenWords)) {
-        //     showToast(`输入内容包含违禁词--${checkForForbiddenWords(strPrompt, forbiddenWords)}`)
-        //     return
-        // }
+        if (checkForForbiddenWords(strPrompt, forbiddenWords)) {
+            showToast(`输入内容包含违禁词--${checkForForbiddenWords(strPrompt, forbiddenWords)}`)
+            return
+        }
         setDrawing(true);
         setOnDrawImg({} as drawRes)
-        // if (useOwnKey.active) {
-        //     const requiredKeys = ['active','user_token', 'session_id', 'server_id', 'channel_id'];
-        //     if (!areAllKeysValid(useOwnKey, requiredKeys)) {
-        //         showToast("请先设置自己的API");
-        //         setDrawing(false);
-        //         return;
-        //     }
-        //     requiredKeys.forEach(key => {
-        //         data.useOwnkey = {
-        //             ...data.useOwnkey,
-        //             [key]: useOwnKey[key]
-        //         };
-        //     });
-        // }
+        if (useOwnKey.active) {
+            const requiredKeys = ['active','user_token', 'session_id', 'server_id', 'channel_id'];
+            if (!areAllKeysValid(useOwnKey, requiredKeys)) {
+                showToast("请先设置自己的API");
+                setDrawing(false);
+                return;
+            }
+            requiredKeys.forEach(key => {
+                data.useOwnkey = {
+                    ...data.useOwnkey,
+                    [key]: useOwnKey[key]
+                };
+            });
+        }
         try {
             setSubmitting(true);
             if (parentImages.length > 0) {
