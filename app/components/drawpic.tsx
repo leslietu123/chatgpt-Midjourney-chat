@@ -44,7 +44,7 @@ export function DrawImg(props: DrawImgProps) {
                     {loading && <div className={styles.loader}>Loading...</div>}
                     <Image
                         layout="fill"
-                        src={props.onDrawImg?.url ? props.onDrawImg?.url : props.onDrawImg?.uri || "./no-found.png"}
+                        src={props.onDrawImg?.url ? props.onDrawImg?.url : props.onDrawImg?.uri || "/no-found.png"}
                         alt={props.onDrawImg?.url ? props.onDrawImg?.url : props.onDrawImg?.uri || "no-found.png"}
                         className={styles["draw-img"]}
                         onClick={() => setOpen(true)}
