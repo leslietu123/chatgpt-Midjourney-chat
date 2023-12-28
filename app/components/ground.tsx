@@ -29,6 +29,7 @@ export function Ground() {
     let limit = 20;
     const [page, setPage] = useState(1);
     const [downloading, setDownloading] = useState(false);
+    const [loading, setLoading] = useState(true)
 
     const fetchData = async (page: number, append: boolean = false) => {
         try {
@@ -64,7 +65,7 @@ export function Ground() {
         await fetchData(page, true);
     };
 
-    const copyPromptClipboard = async (data:drawRes) => {
+    const copyPromptClipboard = async (data: drawRes) => {
         try {
             await navigator.clipboard.writeText(data?.prompt || "");
             showToast("已复制到剪切板");
@@ -74,7 +75,7 @@ export function Ground() {
         }
     };
 
-    async function handleDownload(data:drawRes) {
+    async function handleDownload(data: drawRes) {
         const url = data?.uri || "";
         setDownloading(true);
         showToast("下载中...")
@@ -109,7 +110,7 @@ export function Ground() {
                 </div>
             </div>
             <Cover open={open} onClose={() => setOpen(false)} onDrawImg={selectDraw}/>
-            <Box overflowY={"auto"} overflowX={"hidden"} >
+            <Box overflowY={"auto"} overflowX={"hidden"}>
                 <Masonry columns={{640: 2, 768: 3, 1024: 4, 1280: 5, 1600: 6}} gap={10} style={{
                     margin: "0 auto",
                     // overflowY: "auto",
@@ -125,9 +126,14 @@ export function Ground() {
                                 setSelectDraw(item);
                                 setOpen(true);
                             }}>
-                                <Image layout="fill" src={item.uri} alt={item._id}
-                                       className={styles["ground__draw-img"]}
-                                />
+                                <Box>
+                                    {loading && <div className={styles.loader}>Loading...</div>}
+                                    <Image layout="fill" src={item.uri} alt={item._id}
+                                           className={styles["ground__draw-img"]}
+                                           onLoadingComplete={() => setLoading(false)}
+                                    />
+                                </Box>
+
                                 <Flex padding={1} className={styles['mItem-cover']}>
                                     <Flex padding={3} width="100%" justifyContent={"space-between"}>
                                         <Box fontWeight={900} color={'#fff'}

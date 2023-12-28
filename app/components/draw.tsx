@@ -9,38 +9,34 @@ import {ErrorBoundary} from "./error";
 import {useNavigate} from "react-router-dom";
 import {useMobileScreen} from "@/app/utils";
 import Popup from "./pop";
-import {showToast, showConfirm} from "@/app/components/ui-lib";
+import {showConfirm, showToast} from "@/app/components/ui-lib";
 import {DrawImg} from "./drawpic"
 import {isLogin} from "@/app/api/backapi/user";
 import ImageUploader from "./draw-imageuploader";
 import InfiniteScroll from "react-infinite-scroll-component";
-import {models, sizes, qualities, versions, iw,forbiddenWords} from "../static";
-import {
-    FetchParams,
-} from "../api/backapi/types";
+import {forbiddenWords, iw, models, qualities, sizes, versions} from "../static";
+import {FetchParams, promptGen,} from "../api/backapi/types";
 import {useAppConfig} from "@/app/store";
 import Image from 'next/image';
-import {Input} from 'antd';
+import {Input, Slider} from 'antd';
 import RightDrawer from "@/app/components/drawer";
-import {promptGen} from "../api/backapi/types";
-import {Slider} from 'antd';
 import {
     getDrawsByUser,
-    getFeatureList, getImgs,
+    getFeatureList,
+    getImgs,
     getPromptsByFeature,
+    getTaskId,
     sendImagine,
     shareToGround,
 } from "@/app/api/back/mj";
-import {Action, drawRes, Feature, ForbiddenWords, mjKey, openAIKey, Prompt, User} from "@/app/api/back/types";
-import {Box, ChakraProvider, Flex, FormControl, FormLabel, Link, Select, Spacer, Tooltip} from "@chakra-ui/react";
+import {Action, drawRes, Feature, ForbiddenWords, Prompt, User} from "@/app/api/back/types";
+import {Box, ChakraProvider, Flex, Link, Select, Spacer, Tooltip} from "@chakra-ui/react";
 import {NotAllowedIcon, WarningIcon} from "@chakra-ui/icons";
 import io from "socket.io-client";
 import {getTransResult} from "../api/translate/api";
 import chakraTheme from "@/app/thems";
 import {initUser} from "@/app/components/profile";
 import {getMe} from "@/app/api/back/user";
-import OwnKeySetting from "@/app/components/own-key-setting";
-
 
 
 const {TextArea} = Input;
@@ -72,7 +68,7 @@ const initialState: promptGen = {
 }
 
 export function Draw() {
-    let limit = 20;
+    let limit = 10;
     const userToken = localStorage.getItem("user_token");
     const [userInfo, setUserInfo] = React.useState<User>(initUser);
     const theme = useAppConfig().theme;
@@ -84,7 +80,7 @@ export function Draw() {
     const [drawImg, setDrawImg] = React.useState({} as FetchParams);
     const [drawing, setDrawing] = React.useState(false);
     const [submitting, setSubmitting] = React.useState(false);
-    const [parentImages, setParentImages] = useState<File[]>([]);
+    const [parentImgs, setParentImgs] = useState<string[]>([]);
     const [hasMore, setHasMore] = useState(true)
     const [prompt, setPrompt] = useState<promptGen>(initialState)
     const [featureList, setFeatureList] = useState<Feature[]>([])
@@ -93,9 +89,10 @@ export function Draw() {
     const [total, setTotal] = useState(0)
     const [onDrawImg, setOnDrawImg] = useState<drawRes>({} as drawRes)
     const [drawResList, setDrawResList] = useState<drawRes[]>([] as drawRes[])
-    const strPrompt = `${prompt.content}${prompt.selectedPrompt.length > 0 ? `,${prompt.selectedPrompt.map(item => item.prompt).join(",")}` : ''}${prompt.model?.value}${prompt.size?.value}${prompt.chaos !== 0 ? ` --chaos ${prompt.chaos}` : ""}${parentImages.length > 0 ? prompt.iw : ""}${prompt.styled !== 0 ? ` --s ${prompt.styled}` : ""}${prompt.stop !== 100 ? ` --stop ${prompt.stop}` : ""}${prompt.weird !== 0 ? ` --weird ${prompt.weird}` : ""}${prompt.tile ? ' --tile' : ""}${prompt.seed !== 0 ? ` --seed ${prompt.seed}` : ""}${prompt.quality?.value}${prompt.version?.value}`
+    const strPrompt = `${prompt.content}${prompt.selectedPrompt.length > 0 ? `,${prompt.selectedPrompt.map(item => item.prompt).join(",")}` : ''}${prompt.model?.value}${prompt.size?.value}${prompt.chaos !== 0 ? ` --chaos ${prompt.chaos}` : ""}${parentImgs.length > 0 ? prompt.iw : ""}${prompt.styled !== 0 ? ` --s ${prompt.styled}` : ""}${prompt.stop !== 100 ? ` --stop ${prompt.stop}` : ""}${prompt.weird !== 0 ? ` --weird ${prompt.weird}` : ""}${prompt.tile ? ' --tile' : ""}${prompt.seed !== 0 ? ` --seed ${prompt.seed}` : ""}${prompt.quality?.value}${prompt.version?.value}`
     const [page, setPage] = useState(1)
-    const [useOwnKey, setUseOwnKey] = useState<mjKey>({} as mjKey)
+    const [totalImgs,setTotalImgs]=useState(0)
+    // const [useOwnKey, setUseOwnKey] = useState<mjKey>({} as mjKey)
 
     const handleFormDataChange = () => {
         let updatedFormData;
@@ -105,7 +102,7 @@ export function Draw() {
         } catch (error) {
             console.error("Parsing error: ", error);
         }
-        setUseOwnKey(updatedFormData);
+        // setUseOwnKey(updatedFormData);
     };
 
     useEffect(() => {
@@ -185,8 +182,9 @@ export function Draw() {
     useEffect(() => {
         if (islogin) {
             getDrawsByUser(page).then((r) => {
-                setDrawResList(r);
+                setDrawResList(r.data);
                 setPage(page + 1);
+                setTotalImgs(r.total)
             })
         }
     }, []);
@@ -220,9 +218,9 @@ export function Draw() {
         return key !== "" && key != null;
     }
 
-    const areAllKeysValid = (useOwnKey: mjKey, keys: any[]) => {
-        return keys.every(key => isKeyValid(useOwnKey[key]));
-    }
+    // const areAllKeysValid = (useOwnKey: mjKey, keys: any[]) => {
+    //     return keys.every(key => isKeyValid(useOwnKey[key]));
+    // }
 
 
     const handleSubmit = async (data: any) => {
@@ -235,7 +233,7 @@ export function Draw() {
             showToast("请输入描述")
             return
         }
-        if (parentImages.length === 0 && active === 1) {
+        if (parentImgs.length === 0 && active === 1) {
             showToast("请上传图片")
             return
         }
@@ -245,44 +243,55 @@ export function Draw() {
         }
         setDrawing(true);
         setOnDrawImg({} as drawRes)
-        if (useOwnKey.active) {
-            const requiredKeys = ['active','user_token', 'session_id', 'server_id', 'channel_id'];
-            if (!areAllKeysValid(useOwnKey, requiredKeys)) {
-                showToast("请先设置自己的API");
-                setDrawing(false);
-                return;
-            }
-            requiredKeys.forEach(key => {
-                data.useOwnkey = {
-                    ...data.useOwnkey,
-                    [key]: useOwnKey[key]
-                };
-            });
-        }
+        // if (useOwnKey.active) {
+        //     const requiredKeys = ['active', 'user_token', 'session_id', 'server_id', 'channel_id'];
+        //     if (!areAllKeysValid(useOwnKey, requiredKeys)) {
+        //         showToast("请先设置自己的API");
+        //         setDrawing(false);
+        //         return;
+        //     }
+        //     requiredKeys.forEach(key => {
+        //         data.useOwnkey = {
+        //             ...data.useOwnkey,
+        //             [key]: useOwnKey[key]
+        //         };
+        //     });
+        // }
         try {
             setSubmitting(true);
-            if (parentImages.length > 0) {
-                const res = await getImgs(parentImages);
-                data.images = res;
+            if (parentImgs.length > 0) {
+                // data.images = await getImgs(parentImages);
+                data.imgs = parentImgs
             }
-            const res = await sendImagine(data);
-            if (res.code === 0) {
-                showToast("提交成功")
-                setSubmitting(false);
-                const socket = io(`${process.env.NEXT_PUBLIC_BACK_WS}`);
-                socket.on(res.taskId, (data: drawRes) => {
-                    setOnDrawImg(data);
-                    if (data.progress === 'done') {
-                        setDrawing(false);
-                        showToast("绘画完成");
-                        drawResList.unshift(data);
-                        socket.close();
+            const r = await getTaskId();
+            const socket = io(`${process.env.NEXT_PUBLIC_BACK_WS}`);
+            if (r.taskId) {
+                socket.emit('client_ready', {taskId: r.taskId});
+                data.taskId = r.taskId;
+                socket.on(r.taskId, async (message) => {
+                    if(message && message.message === "success"){
+                        const res = await sendImagine(data);
+                        if (res.code === 0) {
+                            showToast("提交成功")
+                            setSubmitting(false);
+                            socket.on(r.taskId, (data: drawRes) => {
+                                console.log("data",data)
+                                setOnDrawImg(data);
+                                if (data.progress === 'done') {
+                                    setDrawing(false);
+                                    showToast("绘画完成");
+                                    drawResList.unshift(data);
+                                    socket.close();
+                                }
+                            });
+                        } else {
+                            showToast(res.msg || "提交失败");
+                            setSubmitting(false);
+                            setDrawing(false);
+                        }
                     }
-                });
-            } else {
-                showToast(res.msg || "提交失败");
-                setSubmitting(false);
-                setDrawing(false);
+                })
+
             }
         } catch (error) {
             console.log(error);
@@ -292,25 +301,27 @@ export function Draw() {
     }
 
 
-    const handleUpload = (uploadedImages: File[]) => {
-        setParentImages(uploadedImages);
-    };
+    const handleUploadImgs = (base64Images: string[]) => {
+        setParentImgs(base64Images);
 
+    };
 
     const loadMore = async () => {
         getDrawsByUser(page).then((res) => {
-            if (res.length == 0) {
+            if (res.data.length == 0) {
                 showToast("没有更多数据了")
                 setHasMore(false);
                 return;
-            } else if (res.length == limit) {
-                setDrawResList((prevDraws) => [...prevDraws, ...res]);
+            } else if (res.data.length == limit) {
+                setDrawResList((prevDraws) => [...prevDraws, ...res.data]);
                 setPage(page + 1);
+                setTotalImgs(res.total)
                 setHasMore(true);
                 return;
             } else {
                 showToast("没有更多数据了");
-                setDrawResList((prevDraws) => [...prevDraws, ...res]);
+                setDrawResList((prevDraws) => [...prevDraws, ...res.data]);
+                setTotalImgs(res.total)
                 setHasMore(false);
                 return;
             }
@@ -674,7 +685,7 @@ export function Draw() {
                                 </div>
                             ) : (
                                 <div className={styles["draw-left-content"]}>
-                                    <ImageUploader onUpload={handleUpload}/>
+                                    <ImageUploader length={5} onUpload={handleUploadImgs}/>
                                 </div>
                             )}
 
@@ -907,7 +918,7 @@ export function Draw() {
                                                 </Box>
                                             </Flex>
                                             <div className={styles["draw-input-item-content-body"]}>
-                                                <ImageUploader onUpload={handleUpload}/>
+                                                <ImageUploader length={1} onUpload={handleUploadImgs}/>
                                             </div>
 
                                         </div>
@@ -1137,7 +1148,7 @@ export function Draw() {
                                     <div className={styles["draw-input-item"]}>
                                         <div className={styles["draw-input-item-content"]}>
                                             <div className={styles["draw-input-item-content-body"]}>
-                                                <ImageUploader onUpload={handleUpload}/>
+                                                <ImageUploader length={5} onUpload={handleUploadImgs}/>
                                             </div>
                                         </div>
                                     </div>
@@ -1181,7 +1192,7 @@ export function Draw() {
                                     disabled={drawing || submitting}
                                     className={`${submitting || drawing ? styles["draw-submitting"] : ""}`}>
                                     {drawing ? ("绘图中...") : (submitting ? ("提交中...") : ("提交绘画"))}
-                                    {!useOwnKey.active && userInfo && userInfo._id !== "" && !userInfo.member.point.unlimited && (
+                                    {!userInfo.member.point.unlimited && (
                                         <span>消耗{userInfo.member.point.consumption.mj}积分</span>
                                     )}
                                 </button>
@@ -1226,6 +1237,7 @@ export function Draw() {
                                                                 flags: onDrawImg.flags,
                                                                 cmd: item.custom,
                                                                 prompt: onDrawImg.prompt,
+                                                                client_id: onDrawImg.client_id,
                                                                 config_id: onDrawImg.config_id,
                                                             })
                                                         }}>
@@ -1244,7 +1256,7 @@ export function Draw() {
                                         {drawResList.length > 0 ? (
                                             <div className={styles["bottom-list-btn"]}
                                                  onClick={() => setShowSidebar(true)}>
-                                                <span>+{drawResList.length}</span>
+                                                <span>+{totalImgs}</span>
                                             </div>
                                         ) : (
                                             <div className={styles["bottom-list-noitem"]}
@@ -1280,9 +1292,8 @@ export function Draw() {
 
                                 </div>
                             ) : (
-
                                 <div id="draw-list" className={styles["draw-list"]}>
-                                    <span className={styles["draw-list-total"]}>共{drawResList.length}个作品</span>
+                                    <span className={styles["draw-list-total"]}>共{totalImgs}个作品</span>
                                     <InfiniteScroll
                                         dataLength={drawResList.length}
                                         next={loadMore}

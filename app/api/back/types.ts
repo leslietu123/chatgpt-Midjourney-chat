@@ -332,6 +332,7 @@ export type drawRes = {
     url: string;
     isPublic: boolean;
     config_id: string;
+    client_id: string;
     msg?: string;
 }
 

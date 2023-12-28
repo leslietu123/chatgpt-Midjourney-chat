@@ -61,9 +61,18 @@ export function SignUp() {
         };
     }, [codeSend, countdown]);
 
-
+    const closeRegist =  process.env.NEXT_PUBLIC_CLOSE_REGIST;
+    useEffect(() => {
+        if(closeRegist && closeRegist === "1"){
+            showToast("负载过大，暂时关闭注册通道...")
+        }
+    }, []);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if(closeRegist && closeRegist === "1"){
+            showToast("负载过大，暂时关闭注册通道...")
+            return;
+        }
         setLoading(true)
         if (phoneNumber.length != 11) {
             showToast("请输入正确的手机号");

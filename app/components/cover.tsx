@@ -126,7 +126,7 @@ export default function Cover(props: CoverProps) {
                             </div>
                             <div className={styles["cover-content-user-info"]}>
                                 <span>{"#" + props.onDrawImg?.user?.name.substring(0, 3) + "***" + props.onDrawImg?.user?.name.substring(9)}</span>
-                                <span>{props.onDrawImg?.created_at ? new Date(parseFloat(String(props.onDrawImg?.created_at))).toLocaleString() : ""}</span>
+                                <span>{props.onDrawImg?.created_at ? new Date(props.onDrawImg?.created_at).toLocaleString() : ""}</span>
                             </div>
                         </div>
 

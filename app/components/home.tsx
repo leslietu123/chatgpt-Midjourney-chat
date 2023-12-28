@@ -36,8 +36,8 @@ mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, {debug: true});
 export function Loading(props: { noLogo?: boolean }) {
     return (
         <div className={styles["loading-content"] + " no-dark"}>
-            {!props.noLogo && <BotIcon/>}
-            <LoadingIcon/>
+            {/*{!props.noLogo && <BotIcon/>}*/}
+            <img src="./loading.svg" alt=""/>
         </div>
     );
 }

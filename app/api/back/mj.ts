@@ -51,7 +51,7 @@ export async function sendImagine(data: sendImagine): Promise<sendImagineRes> {
 }
 
 
-export async function getDrawsByUser(page: number): Promise<drawRes[]> {
+export async function getDrawsByUser(page: number): Promise<{data:drawRes[],total:number}> {
     try {
         const res = await axios.get('api/back/midjourney-api/draws', {
             params: {
@@ -122,3 +122,12 @@ export async function getImgs(data: File[]): Promise<string[]> {
 }
 
 
+export async function getTaskId(): Promise<{taskId:string}> {
+    try {
+        const res = await axios.get('api/back/midjourney-api/task_id',{});
+        console.log(res)
+        return res.data;
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
