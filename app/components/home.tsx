@@ -219,7 +219,7 @@ function Screen() {
             }
         >
             {showService && (
-                <Box zIndex={999} mt={3} position={"absolute"} left={3} bottom={3}>
+                <Box zIndex={99999} mt={3} position={"absolute"} left={3} bottom={3}>
                     <Card align='center' bg={"var(--bg-transparent-white)"} backdropFilter={"blur(20px)"} position={"relative"}>
                         <CloseButton position={"absolute"} right={3} top={3} onClick={()=>setShowService(false)}/>
                         <CardHeader >
