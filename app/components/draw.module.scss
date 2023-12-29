@@ -15,6 +15,57 @@
   bottom: 0;
 }
 
+/* 共同样式 */
+.corner-borders {
+  max-height: 40px;
+  margin: auto;
+  border-radius: 3px;
+  background-clip: padding-box;
+  position: relative;
+}
+
+.sub-border::before, .sub-border::after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-color: var(--black);
+  border-width: 0;
+  width: 5px;
+  height: 5px;
+}
+
+/* 左上角 */
+.corner-borders .sub-border:first-child::before {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+/* 右下角 */
+.corner-borders .sub-border:first-child::after {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+/* 右上角 */
+.corner-borders .sub-border:last-child::before {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+/* 左下角 */
+.corner-borders .sub-border:last-child::after {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
 .crop-container {
   //position: absolute;
   //top: 0;
@@ -231,7 +282,7 @@
   border: var(--border-in-light);
   margin: 10px 0;
   border-radius: 5px;
-  background-color: var(--prompt-content);
+  //background-color: var(--prompt-content);
 }
 
 .draw-input-item-prompt-item{

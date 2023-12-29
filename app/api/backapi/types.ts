@@ -257,6 +257,8 @@ export type Size = {
     title: string;
     value: string;
     style?: string;
+    width?: number;
+    height?: number;
 }
 
 export type Iw ={

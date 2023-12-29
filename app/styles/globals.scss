@@ -62,7 +62,7 @@
   --ground-btn-bg: rgba(73, 70, 70, 0.48);
   --pic-border:2px dashed rgb(140, 140, 140);
   --prompt-border:1px solid rgb(72, 72, 72);
-  --draw-img-border:2px solid rgb(255, 255, 255);
+  --draw-img-border:2px dotted rgb(255, 255, 255);
   --bottom-bar-bg: rgba(0, 17, 38, 0.81);
   --left-sidebar-background:#323232 ;
   --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
@@ -325,7 +325,7 @@ input[type="password"] {
   border: var(--border-in-light);
   min-height: 36px;
   box-sizing: border-box;
-  background: var(--white);
+  background: var(--bg-transparent);
   color: var(--black);
   padding: 0 10px;
   max-width: 100%;

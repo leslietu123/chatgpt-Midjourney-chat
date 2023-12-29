@@ -15,8 +15,9 @@ import {isLogin} from "@/app/api/backapi/user";
 import ImageUploader from "./draw-imageuploader";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {forbiddenWords, iw, models, qualities, sizes, versions} from "../static";
-import {FetchParams, promptGen,} from "../api/backapi/types";
+import {FetchParams, promptGen, Size,} from "../api/backapi/types";
 import {useAppConfig} from "@/app/store";
+import { RxWidth,RxHeight } from "react-icons/rx";
 import Image from 'next/image';
 import {Input, Slider} from 'antd';
 import RightDrawer from "@/app/components/drawer";
@@ -30,8 +31,18 @@ import {
     shareToGround,
 } from "@/app/api/back/mj";
 import {Action, drawRes, Feature, ForbiddenWords, Prompt, User} from "@/app/api/back/types";
-import {Box, ChakraProvider, Flex, Link, Select, Spacer, Tooltip} from "@chakra-ui/react";
-import {NotAllowedIcon, WarningIcon} from "@chakra-ui/icons";
+import {
+    Box,
+    ChakraProvider,
+    Flex, InputGroup, InputLeftElement,
+    Link,
+    NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper,
+    Select,
+    SimpleGrid,
+    Spacer,
+    Tooltip
+} from "@chakra-ui/react";
+import {NotAllowedIcon, PhoneIcon, WarningIcon} from "@chakra-ui/icons";
 import io from "socket.io-client";
 import {getTransResult} from "../api/translate/api";
 import chakraTheme from "@/app/thems";
@@ -91,8 +102,22 @@ export function Draw() {
     const [drawResList, setDrawResList] = useState<drawRes[]>([] as drawRes[])
     const strPrompt = `${prompt.content}${prompt.selectedPrompt.length > 0 ? `,${prompt.selectedPrompt.map(item => item.prompt).join(",")}` : ''}${prompt.model?.value}${prompt.size?.value}${prompt.chaos !== 0 ? ` --chaos ${prompt.chaos}` : ""}${parentImgs.length > 0 ? prompt.iw : ""}${prompt.styled !== 0 ? ` --s ${prompt.styled}` : ""}${prompt.stop !== 100 ? ` --stop ${prompt.stop}` : ""}${prompt.weird !== 0 ? ` --weird ${prompt.weird}` : ""}${prompt.tile ? ' --tile' : ""}${prompt.seed !== 0 ? ` --seed ${prompt.seed}` : ""}${prompt.quality?.value}${prompt.version?.value}`
     const [page, setPage] = useState(1)
-    const [totalImgs,setTotalImgs]=useState(0)
+    const [totalImgs, setTotalImgs] = useState(0)
+    const [customRatio, setCustomRatio] = useState({width: 1, height: 1});
     // const [useOwnKey, setUseOwnKey] = useState<mjKey>({} as mjKey)
+
+    useEffect(() => {
+        const newSizeValue = ` --ar ${customRatio.width}:${customRatio.height}`;
+        const newSize:Size = {id: 0, name: "", title: "", ...prompt.size, value: newSizeValue};
+        setPrompt({...prompt, size: newSize});
+    }, [customRatio]);
+
+    const handleRatioChange = (name: any) => (valueAsString: string) => {
+        setCustomRatio({...customRatio, [name]: parseFloat(valueAsString) || 1});
+    };
+
+    // 计算宽高比
+    const calculatedRatio = `${customRatio.width} / ${customRatio.height}`;
 
     const handleFormDataChange = () => {
         let updatedFormData;
@@ -269,13 +294,13 @@ export function Draw() {
                 socket.emit('client_ready', {taskId: r.taskId});
                 data.taskId = r.taskId;
                 socket.on(r.taskId, async (message) => {
-                    if(message && message.message === "success"){
+                    if (message && message.message === "success") {
                         const res = await sendImagine(data);
                         if (res.code === 0) {
                             showToast("提交成功")
                             setSubmitting(false);
                             socket.on(r.taskId, (data: drawRes) => {
-                                console.log("data",data)
+                                console.log("data", data)
                                 setOnDrawImg(data);
                                 if (data.progress === 'done') {
                                     setDrawing(false);
@@ -953,21 +978,54 @@ export function Draw() {
                                                          className={`${styles["draw-input-item-content-item"]} ${prompt.size?.id === item.id ? styles["actived"] : ""}`}
                                                          onClick={() => {
                                                              setPrompt({...prompt, size: item})
+                                                             setCustomRatio({...customRatio, width: item.width || 1, height: item.height || 1})
                                                          }}>
                                                         <div
                                                             className={styles["draw-input-item-content-text"]}>
-                                                            <div style={{
+                                                            <div
+                                                                className={styles['corner-borders']}
+                                                                style={{
                                                                 width: "20px",
-                                                                border: 'var(--draw-img-border)',
-                                                                paddingTop: item.style,
-                                                                margin: "auto",
-                                                                borderRadius: "3px"
-                                                            }}></div>
+                                                                aspectRatio: item.style,
+                                                            }}>
+                                                                <div className={styles['sub-border']}></div>
+                                                                <div className={styles['sub-border']}></div>
+                                                            </div>
                                                             {item.name}
                                                         </div>
                                                     </div>
                                                 ))}
                                             </div>
+                                            <Flex gap={2} justifyContent={"center"} alignItems={"center"}>
+                                                <InputGroup>
+                                                    <InputLeftElement pointerEvents='none'>
+                                                        <RxWidth/>
+                                                    </InputLeftElement>
+                                                    <NumberInput defaultValue={customRatio.width} value={customRatio.width} min={1}
+                                                                 onChange={handleRatioChange('width')}>
+                                                        <NumberInputField placeholder="宽度"/>
+                                                    </NumberInput>
+                                                </InputGroup>
+                                                :
+                                                <InputGroup>
+                                                    <InputLeftElement pointerEvents='none'>
+                                                        <RxHeight/>
+                                                    </InputLeftElement>
+                                                    <NumberInput defaultValue={customRatio.height} value={customRatio.height} min={1}
+                                                                 onChange={handleRatioChange('height')}>
+                                                        <NumberInputField placeholder="高度"/>
+                                                    </NumberInput>
+                                                </InputGroup>
+                                            </Flex>
+                                            <Box mt={4} border="var(--border-in-light)" p={2}>
+                                                    <div className={styles['corner-borders']} style={{
+                                                        maxHeight: "40px", // 宽度可以是固定的或者是百分比
+                                                        aspectRatio: calculatedRatio,
+                                                    }}>
+                                                        <div className={styles['sub-border']}></div>
+                                                        <div className={styles['sub-border']}></div>
+                                                    </div>
+                                            </Box>
                                         </div>
                                     </div>
                                     <div className={styles["draw-input-item"]}>

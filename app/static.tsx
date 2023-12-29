@@ -1,6 +1,12 @@
 import {itemUV, Iw, Modle, Quality, Size, Version} from "./api/backapi/types";
 import {Path} from "@/app/constant";
-import { HiPaintBrush,HiMiniHome,HiChatBubbleLeftRight, HiMiniSparkles, HiMiniEllipsisHorizontal } from "react-icons/hi2";
+import {
+    HiPaintBrush,
+    HiMiniHome,
+    HiChatBubbleLeftRight,
+    HiMiniSparkles,
+    HiMiniEllipsisHorizontal
+} from "react-icons/hi2";
 import {Icon} from "@chakra-ui/react";
 import {ReactComponentElement} from "react";
 import {ForbiddenWords} from "@/app/api/back/types";
@@ -12,11 +18,11 @@ export const models: Modle[] = [
 
 
 export const sizes: Size[] = [
-    {id: 1, name: "1:1", value: " --ar 1:1", title: "头像图", style: "calc(50%)"},
-    {id: 2, name: "4:3", value: " --ar 4:3", title: "媒体配图", style: "calc(25%)"},
-    {id: 3, name: "3:4", value: " --ar 3:4", title: "媒体配图", style: "calc(60%)"},
-    {id: 4, name: "16:9", value: " --ar 16:9", title: "电脑壁纸", style: "calc(15%)"},
-    {id: 5, name: "9:16", value: " --ar 9:16", title: "海报图", style: "calc(70%)"}
+    {id: 1, name: "1:1", value: " --ar 1:1", title: "头像图", style: "1", width: 1, height: 1},
+    {id: 2, name: "4:3", value: " --ar 4:3", title: "媒体配图", style: "4/3", width: 4, height: 3},
+    {id: 3, name: "3:4", value: " --ar 3:4", title: "媒体配图", style: "3/4", width: 3, height: 4},
+    {id: 4, name: "16:9", value: " --ar 16:9", title: "电脑壁纸", style: "16/9", width: 16, height: 9},
+    {id: 5, name: "9:16", value: " --ar 9:16", title: "海报图", style: "9/16", width: 9, height: 16},
 ]
 
 export const iw: Iw[] = [
@@ -102,11 +108,11 @@ export interface IMenu {
     path_name: string;
 }
 
-export const menu:IMenu[] = [
+export const menu: IMenu[] = [
     {
         name: "Home",
         title: "主页",
-        icon: <Icon as={HiMiniHome} width="20px" height="20px" color="inherit" />,
+        icon: <Icon as={HiMiniHome} width="20px" height="20px" color="inherit"/>,
         icon_dark: "./home-dark.svg",
         icon_light: "./home-light.svg",
         icon_active: "./home-active.svg",
@@ -116,7 +122,7 @@ export const menu:IMenu[] = [
     {
         name: "Chat",
         title: "AI 对话",
-        icon: <Icon as={HiChatBubbleLeftRight} width="20px" height="20px" color="inherit" />,
+        icon: <Icon as={HiChatBubbleLeftRight} width="20px" height="20px" color="inherit"/>,
         icon_dark: "./chat-dark.svg",
         icon_light: "./chat-light.svg",
         icon_active: "./chat-active.svg",
@@ -126,7 +132,7 @@ export const menu:IMenu[] = [
     {
         name: "Draw",
         title: "AI 绘画",
-        icon: <Icon as={HiPaintBrush} width="20px" height="20px" color="inherit" />,
+        icon: <Icon as={HiPaintBrush} width="20px" height="20px" color="inherit"/>,
         icon_dark: "./draw-dark.svg",
         icon_light: "./draw-light.svg",
         icon_active: "./draw-active.svg",
@@ -136,7 +142,7 @@ export const menu:IMenu[] = [
     {
         name: "Ground",
         title: "绘画广场",
-        icon: <Icon as={HiMiniSparkles} width="20px" height="20px" color="inherit" />,
+        icon: <Icon as={HiMiniSparkles} width="20px" height="20px" color="inherit"/>,
         icon_dark: "./ground-dark.svg",
         icon_light: "./ground-light.svg",
         icon_active: "./ground-active.svg",
@@ -146,7 +152,7 @@ export const menu:IMenu[] = [
     {
         name: "Ground",
         title: "更多功能开发中",
-        icon: <Icon as={HiMiniEllipsisHorizontal} width="20px" height="20px" color="inherit" />,
+        icon: <Icon as={HiMiniEllipsisHorizontal} width="20px" height="20px" color="inherit"/>,
         icon_dark: "./ground-dark.svg",
         icon_light: "./ground-light.svg",
         icon_active: "./ground-active.svg",
@@ -156,7 +162,7 @@ export const menu:IMenu[] = [
 ]
 
 
-export const forbiddenWords:ForbiddenWords[] = [
+export const forbiddenWords: ForbiddenWords[] = [
     {
         id: 1,
         words: "Blood"
