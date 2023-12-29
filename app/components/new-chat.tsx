@@ -15,9 +15,26 @@ import {BUILTIN_MASK_STORE} from "../masks";
 import {useMobileScreen} from "@/app/utils";
 import {Masks} from "../masks/masks"
 import {homelist} from "../static"
-import {Link} from "react-router-dom";
 import Image from "next/image";
 import {SiteConfig} from "@/app/api/back/types";
+import {GrToast,GrGithub} from "react-icons/gr";
+import { LiaServicestack } from "react-icons/lia";
+import { RiChatPrivateLine,RiCodeSSlashFill } from "react-icons/ri";
+import {
+    Avatar,
+    Box,
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    CardHeader,
+    Flex,
+    Link,
+    Heading, LinkOverlay,
+    Tag,
+    TagLabel
+} from "@chakra-ui/react";
+import {showConfirm} from "@/app/components/ui-lib";
 
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
@@ -149,7 +166,8 @@ export function NewChat(props: NewChatProps) {
                     <h2 className={styles["new-chat-left-sub-title"]}>{props.siteConfig?.sub_title}</h2>
                     <div className={styles["new-chat-left-header-content"]}>
                         {homelist.item1.map((item, index) => (
-                            <button type="button" key={item.id} className={styles["new-chat-left-header-left"]} onClick={()=>navigate(item.path)}>
+                            <button type="button" key={item.id} className={styles["new-chat-left-header-left"]}
+                                    onClick={() => navigate(item.path)}>
                                 <div className={styles["new-chat-left-header-right-item-header"]}>
                                     <img src={item.icon} width={30} alt=""/>
                                     <span>{item.name}</span>
@@ -175,6 +193,43 @@ export function NewChat(props: NewChatProps) {
                         {/*    ))}*/}
                         {/*</div>*/}
                     </div>
+                    <Box w="100%" mt={3}>
+                        <Card align='center' bg={"var(--bg-transparent)"}>
+                            <CardHeader>
+                                <Flex px={3} mt={3} w="100%" justifyContent={"left"} alignItems={"center"}>
+                                    <LiaServicestack size={25} color={"rgb(0, 253, 217)"}/>
+                                    <Heading fontWeight={900} ml={2} size='sm' color={"var(--black)"}>
+                                        企业服务
+                                    </Heading>
+                                </Flex>
+                            </CardHeader>
+                            <CardBody>
+                                <Flex gap={2}>
+                                    <Tag size='lg' colorScheme='red' borderRadius='full' onClick={async () => {
+                                        if (await showConfirm(`联系客服微信+v(请注明来意)：Leslie_211112`)) {
+                                            // await handleAction("change", item)
+                                        }
+                                    }}>
+                                        <RiChatPrivateLine size={20}/>
+                                        <TagLabel ml={2} fontSize={13}>私有化部署</TagLabel>
+                                    </Tag>
+                                    <Tag size='lg' colorScheme='red' borderRadius='full' onClick={async () => {
+                                        if (await showConfirm(`联系客服微信+v(请注明来意)：Leslie_211112`)) {
+                                            // await handleAction("change", item)
+                                        }
+                                    }}>
+                                        <RiCodeSSlashFill size={20}/>
+                                        <TagLabel ml={2} fontSize={13}>定制开发</TagLabel>
+                                    </Tag>
+                                    <Tag size='lg' colorScheme='red' borderRadius='full'>
+                                        <GrGithub size={20}/>
+                                        <Link ml={2} fontSize={13} href="https://github.com/leslietu123/chatgpt-Midjourney-chat">Repo</Link>
+                                    </Tag>
+                                </Flex>
+                            </CardBody>
+                        </Card>
+                    </Box>
+
                 </div>
                 {/*<div className={styles["new-chat-left-body"]}>*/}
                 {/*    <div className={styles["new-chat-left-body-item"]}>*/}

@@ -24,12 +24,28 @@ import ChatIcon from "@/app/icons/chat.svg";
 import {IconButton} from "@/app/components/button";
 import PopUp from "@/app/components/pop";
 import {getLocalUserInfo, isLogin} from "@/app/api/backapi/user";
-import {ChakraProvider, theme} from "@chakra-ui/react";
+import {
+    Box,
+    Card,
+    CardBody,
+    CardHeader,
+    ChakraProvider, CloseButton,
+    Flex,
+    Heading,
+    Link,
+    Tag,
+    TagLabel,
+    theme
+} from "@chakra-ui/react";
 import chakraTheme from "@/app/thems";
 import {CacheProvider} from '@chakra-ui/next-js'
 import {addVisit, getConfig} from "@/app/api/back/user";
 import {SiteConfig} from "@/app/api/back/types";
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import {LiaServicestack} from "react-icons/lia";
+import {showConfirm} from "@/app/components/ui-lib";
+import {RiChatPrivateLine, RiCodeSSlashFill} from "react-icons/ri";
+import {GrGithub} from "react-icons/gr";
 
 mixpanel.init(`${process.env.NEXT_PUBLIC_MIXPANEL_CLIENT_ID}`, {debug: true});
 
@@ -163,6 +179,7 @@ function Screen() {
         || location.pathname === Path.UserProfile
         || location.pathname === Path.BuyPoints;
     const [siteConfig, setSiteConfig] = useState<SiteConfig>({} as SiteConfig);
+    const [showService,setShowService]=useState(true)
 
     useEffect(() => {
         loadAsyncGoogleFont();
@@ -201,6 +218,46 @@ function Screen() {
                 } ${getLang() === "ar" ? styles["rtl-screen"] : ""} ${theme === "dark" ? styles["dark"] : ""}`
             }
         >
+            {showService && (
+                <Box zIndex={999} mt={3} position={"absolute"} left={3} bottom={3}>
+                    <Card align='center' bg={"var(--bg-transparent-white)"} backdropFilter={"blur(20px)"} position={"relative"}>
+                        <CloseButton position={"absolute"} right={3} top={3} onClick={()=>setShowService(false)}/>
+                        <CardHeader >
+                            <Flex px={3} mt={3} w="100%" justifyContent={"left"} alignItems={"center"}>
+                                <LiaServicestack size={25} color={"rgb(0, 253, 217)"}/>
+                                <Heading fontWeight={900} ml={2} size='sm'>
+                                    企业服务
+                                </Heading>
+                            </Flex>
+                        </CardHeader>
+                        <CardBody>
+                            <Flex gap={2}>
+                                <Tag size='lg' colorScheme='red' borderRadius='full' onClick={async () => {
+                                    if (await showConfirm(`联系客服微信+v(请注明来意)：Leslie_211112`)) {
+                                        // await handleAction("change", item)
+                                    }
+                                }}>
+                                    <RiChatPrivateLine size={20}/>
+                                    <TagLabel ml={2} fontSize={13}>私有化部署</TagLabel>
+                                </Tag>
+                                <Tag size='lg' colorScheme='red' borderRadius='full' onClick={async () => {
+                                    if (await showConfirm(`联系客服微信+v(请注明来意)：Leslie_211112`)) {
+                                        // await handleAction("change", item)
+                                    }
+                                }}>
+                                    <RiCodeSSlashFill size={20}/>
+                                    <TagLabel ml={2} fontSize={13}>定制开发</TagLabel>
+                                </Tag>
+                                <Tag size='lg' colorScheme='red' borderRadius='full'>
+                                    <GrGithub size={20}/>
+                                    <Link ml={2} fontSize={13} href="https://github.com/leslietu123/chatgpt-Midjourney-chat">Repo</Link>
+                                </Tag>
+                            </Flex>
+                        </CardBody>
+                    </Card>
+                </Box>
+            )}
+
             {/*{isShowKefu && (*/}
             {/*    <>*/}
             {/*        <PopUp title="在线客服" open={showKefu} onClick={() => setShowKefu(false)}*/}
