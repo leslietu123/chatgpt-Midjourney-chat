@@ -180,6 +180,7 @@ function Screen() {
         || location.pathname === Path.BuyPoints;
     const [siteConfig, setSiteConfig] = useState<SiteConfig>({} as SiteConfig);
     const [showService,setShowService]=useState(true)
+    const ShowService = process.env.NEXT_PUBLIC_SHOW_SERVICE == "true" || false
 
     useEffect(() => {
         loadAsyncGoogleFont();
@@ -218,7 +219,7 @@ function Screen() {
                 } ${getLang() === "ar" ? styles["rtl-screen"] : ""} ${theme === "dark" ? styles["dark"] : ""}`
             }
         >
-            {showService && (
+            {ShowService && showService && (
                 <Box zIndex={99999} mt={3} position={"absolute"} left={3} bottom={3}>
                     <Card align='center' bg={"var(--bg-transparent-white)"} backdropFilter={"blur(20px)"} position={"relative"}>
                         <CloseButton position={"absolute"} right={3} top={3} onClick={()=>setShowService(false)}/>

@@ -125,7 +125,7 @@ export function NewChat(props: NewChatProps) {
     const isMobileScreen = useMobileScreen();
     const navigate = useNavigate();
     const config = useAppConfig();
-
+    const ShowService = process.env.NEXT_PUBLIC_SHOW_SERVICE == "true" || false
 
     const maskRef = useRef<HTMLDivElement>(null);
 
@@ -193,42 +193,44 @@ export function NewChat(props: NewChatProps) {
                         {/*    ))}*/}
                         {/*</div>*/}
                     </div>
-                    <Box w="100%" mt={3}>
-                        <Card align='center' bg={"var(--bg-transparent)"}>
-                            <CardHeader>
-                                <Flex px={3} mt={3} w="100%" justifyContent={"left"} alignItems={"center"}>
-                                    <LiaServicestack size={25} color={"rgb(0, 253, 217)"}/>
-                                    <Heading fontWeight={900} ml={2} size='sm' color={"var(--black)"}>
-                                        企业服务
-                                    </Heading>
-                                </Flex>
-                            </CardHeader>
-                            <CardBody>
-                                <Flex gap={2}>
-                                    <Tag size='lg' colorScheme='red' borderRadius='full' onClick={async () => {
-                                        if (await showConfirm(`联系客服微信+v(请注明来意)：Leslie_211112`)) {
-                                            // await handleAction("change", item)
-                                        }
-                                    }}>
-                                        <RiChatPrivateLine size={20}/>
-                                        <TagLabel ml={2} fontSize={13}>私有化部署</TagLabel>
-                                    </Tag>
-                                    <Tag size='lg' colorScheme='red' borderRadius='full' onClick={async () => {
-                                        if (await showConfirm(`联系客服微信+v(请注明来意)：Leslie_211112`)) {
-                                            // await handleAction("change", item)
-                                        }
-                                    }}>
-                                        <RiCodeSSlashFill size={20}/>
-                                        <TagLabel ml={2} fontSize={13}>定制开发</TagLabel>
-                                    </Tag>
-                                    <Tag size='lg' colorScheme='red' borderRadius='full'>
-                                        <GrGithub size={20}/>
-                                        <Link ml={2} fontSize={13} href="https://github.com/leslietu123/chatgpt-Midjourney-chat">Repo</Link>
-                                    </Tag>
-                                </Flex>
-                            </CardBody>
-                        </Card>
-                    </Box>
+                    {ShowService && (
+                        <Box w="100%" mt={3}>
+                            <Card align='center' bg={"var(--bg-transparent)"}>
+                                <CardHeader>
+                                    <Flex px={3} mt={3} w="100%" justifyContent={"left"} alignItems={"center"}>
+                                        <LiaServicestack size={25} color={"rgb(0, 253, 217)"}/>
+                                        <Heading fontWeight={900} ml={2} size='sm' color={"var(--black)"}>
+                                            企业服务
+                                        </Heading>
+                                    </Flex>
+                                </CardHeader>
+                                <CardBody>
+                                    <Flex gap={2}>
+                                        <Tag size='lg' colorScheme='red' borderRadius='full' onClick={async () => {
+                                            if (await showConfirm(`联系客服微信+v(请注明来意)：Leslie_211112`)) {
+                                                // await handleAction("change", item)
+                                            }
+                                        }}>
+                                            <RiChatPrivateLine size={20}/>
+                                            <TagLabel ml={2} fontSize={13}>私有化部署</TagLabel>
+                                        </Tag>
+                                        <Tag size='lg' colorScheme='red' borderRadius='full' onClick={async () => {
+                                            if (await showConfirm(`联系客服微信+v(请注明来意)：Leslie_211112`)) {
+                                                // await handleAction("change", item)
+                                            }
+                                        }}>
+                                            <RiCodeSSlashFill size={20}/>
+                                            <TagLabel ml={2} fontSize={13}>定制开发</TagLabel>
+                                        </Tag>
+                                        <Tag size='lg' colorScheme='red' borderRadius='full'>
+                                            <GrGithub size={20}/>
+                                            <Link ml={2} fontSize={13} href="https://github.com/leslietu123/chatgpt-Midjourney-chat">Repo</Link>
+                                        </Tag>
+                                    </Flex>
+                                </CardBody>
+                            </Card>
+                        </Box>
+                    )}
 
                 </div>
                 {/*<div className={styles["new-chat-left-body"]}>*/}
