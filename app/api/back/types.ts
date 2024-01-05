@@ -98,7 +98,7 @@ export interface consumption {
 
 export enum modelEnum {
     mj = 'mj',
-    gpt_4='gpt4',
+    gpt_4='gpt_4',
     gpt_4_0314='gpt_4_0314',
     gpt_4_0613='gpt_4_0613',
     gpt_4_32k='gpt_4_32k',
