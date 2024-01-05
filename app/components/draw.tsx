@@ -425,24 +425,24 @@ export function Draw() {
                                             <img width={15} src="./baidu.svg" alt=""/>
                                         </button>
                                     </div>
-                                    <div className={styles["draw-input-item"]}>
-                                        <div className={styles["draw-input-item-content"]}>
-                                            <span>模型风格</span>
-                                            <div className={styles["draw-input-item-content-body"]}>
-                                                {models.map((item, index) => (
-                                                    <div key={item.id}
-                                                         className={`${styles["draw-input-item-content-item"]} ${prompt.model?.id === item.id ? styles["actived"] : ""}`}
-                                                         onClick={() => {
-                                                             setPrompt({...prompt, model: item})
-                                                         }}>
-                                                        <img src={item.img} alt={item.name}/>
-                                                        <span>{item.title}</span>
-                                                    </div>
-                                                ))}
+                                    {/*<div className={styles["draw-input-item"]}>*/}
+                                    {/*    <div className={styles["draw-input-item-content"]}>*/}
+                                    {/*        <span>模型风格</span>*/}
+                                    {/*        <div className={styles["draw-input-item-content-body"]}>*/}
+                                    {/*            {models.map((item, index) => (*/}
+                                    {/*                <div key={item.id}*/}
+                                    {/*                     className={`${styles["draw-input-item-content-item"]} ${prompt.model?.id === item.id ? styles["actived"] : ""}`}*/}
+                                    {/*                     onClick={() => {*/}
+                                    {/*                         setPrompt({...prompt, model: item})*/}
+                                    {/*                     }}>*/}
+                                    {/*                    <img src={item.img} alt={item.name}/>*/}
+                                    {/*                    <span>{item.title}</span>*/}
+                                    {/*                </div>*/}
+                                    {/*            ))}*/}
 
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {/*        </div>*/}
+                                    {/*    </div>*/}
+                                    {/*</div>*/}
                                     <div className={styles["draw-input-item"]}>
                                         <div className={styles["draw-input-item-content"]}>
                                             <div className={styles["draw-input-item-prompt-content"]}>
